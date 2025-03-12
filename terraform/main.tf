@@ -55,18 +55,24 @@ data "aws_ami" "latest_amazon_linux" {
 
 # EC2 Instance
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.latest_amazon_linux.id
-  instance_type = "t2.micro"
-  key_name      = var.key_name
+  ami             = data.aws_ami.latest_amazon_linux.id
+  instance_type   = "t2.micro"
+  key_name        = var.key_name
   security_groups = [aws_security_group.ec2_sg.name]
 
   user_data = <<-EOF
     #!/bin/bash
     sudo yum update -y
-    sudo yum install -y httpd
-    sudo systemctl start httpd
-    sudo systemctl enable httpd
-    echo "<h1>Hello from Terraform EC2</h1>" | sudo tee /var/www/html/index.html
+    sudo yum install -y docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker ec2-user
+
+    # Pull the latest Docker image from DockerHub
+    sudo docker pull ${var.dockerhub_image}
+
+    # Run the container on port 80
+    sudo docker run -d -p 80:80 ${var.dockerhub_image}
   EOF
 
   tags = {
