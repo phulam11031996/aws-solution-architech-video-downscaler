@@ -1,14 +1,19 @@
-# Define AWS region as a variable
+# Define variables
 variable "aws_region" {
   description = "AWS region to deploy resources"
   type        = string
 }
 
-# Define key pair variable
 variable "key_name" {
   description = "The name of the SSH key pair"
   type        = string
 }
+
+variable "dockerhub_image" {
+  description = "The name of the SSH key pair"
+  type        = string
+}
+
 
 # AWS Provider
 provider "aws" {
