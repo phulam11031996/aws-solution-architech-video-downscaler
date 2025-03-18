@@ -1,4 +1,8 @@
-aws_region    = "us-east-1"
-key_name      = "test-key-pair"
-number_of_azs = 2
-# dockerhub_image = "phulam11031996/web-app:latest"
+aws_region                 = "us-east-1"
+key_name                   = "test-key-pair"
+number_of_azs              = 2
+dockerhub_image            = "phulam11031996/web-app:latest"
+web_server_dockerhub_image = "phulam11031996/web-server:latest"
+
+alb_name = "test-alb-name" # Replace with your ALB name
+
