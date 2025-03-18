@@ -20,3 +20,19 @@ variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16"
 }
+
+variable "dockerhub_image" {
+  description = "The name of the SSH key pair"
+  type        = string
+}
+
+variable "web_server_dockerhub_image" {
+  description = "Docker Hub image for the web server"
+  type        = string
+}
+
+
+variable "alb_name" {
+  description = "Name of the Application Load Balancer"
+  type        = string
+}
