@@ -76,22 +76,14 @@ resource "aws_security_group" "bastion_sg" {
 }
 
 # Allow SSH from Bastion to Web Application EC2
-resource "aws_security_group_rule" "allow_ssh_from_bastion" {
-  type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.web_app_sg.id
-  source_security_group_id = aws_security_group.bastion_sg.id
+resource "aws_security_group_rule" "allow_http_from_bastion" {
+  type              = "egress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = aws_security_group.bastion_sg.id
+  cidr_blocks       = ["0.0.0.0/0"]
 }
-
-
-
-
-
-
-
-
 
 # ---------------------------------------------
 # Security Group for Web Server EC2 Instances
@@ -101,8 +93,8 @@ resource "aws_security_group" "web_server_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port       = 8080
-    to_port         = 8080
+    from_port       = 8080 # Updated to 8080
+    to_port         = 8080 # Updated to 8080
     protocol        = "tcp"
     security_groups = [aws_security_group.web_server_alb_sg.id] # Allow traffic only from ALB
   }
@@ -123,10 +115,9 @@ resource "aws_security_group" "web_server_alb_sg" {
   description = "Allow traffic to web server from the web app"
   vpc_id      = aws_vpc.main.id
 
-  # Updated to accept traffic from the web application security group
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8080 # Updated to 8080
+    to_port         = 8080 # Updated to 8080
     protocol        = "tcp"
     security_groups = [aws_security_group.web_app_sg.id]
   }
@@ -141,14 +132,13 @@ resource "aws_security_group" "web_server_alb_sg" {
   tags = { Name = "web-server-alb-sg" }
 }
 
-
 # Application Load Balancer for Web Server
 resource "aws_lb" "web_server_alb" {
   name               = "web-server-alb"
-  internal           = true # Changed to internal since it's only accessed by web app
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web_server_alb_sg.id]
-  subnets            = aws_subnet.private[*].id # Assuming you have private subnets
+  subnets            = aws_subnet.private[*].id
 
   tags = { Name = "web-server-alb" }
 }
@@ -156,7 +146,7 @@ resource "aws_lb" "web_server_alb" {
 # ALB Target Group
 resource "aws_lb_target_group" "web_server_tg" {
   name     = "web-server-tg"
-  port     = 8080
+  port     = 8080 # Updated to 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
 
@@ -167,13 +157,14 @@ resource "aws_lb_target_group" "web_server_tg" {
     healthy_threshold   = 3
     unhealthy_threshold = 2
   }
+
   tags = { Name = "web-server-tg" }
 }
 
 # ALB Listener for Web Server
 resource "aws_lb_listener" "web_server_listener" {
   load_balancer_arn = aws_lb.web_server_alb.arn
-  port              = 80
+  port              = 8080 # Updated to 8080
   protocol          = "HTTP"
   default_action {
     type             = "forward"
@@ -186,5 +177,38 @@ resource "aws_lb_target_group_attachment" "web_server_attachment" {
   count            = var.number_of_azs
   target_group_arn = aws_lb_target_group.web_server_tg.arn
   target_id        = aws_instance.web_server[count.index].id
-  port             = 8080
+  port             = 8080 # Updated to 8080
 }
+
+# ---------------------------------------------
+resource "aws_eip" "nat" {
+  domain = "vpc"
+}
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id # Use the first public subnet
+
+  tags = {
+    Name = "NAT-Gateway"
+  }
+}
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "Private-RT"
+  }
+}
+resource "aws_route_table_association" "private" {
+  count          = var.number_of_azs
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
+}
+# ---------------------------------------------
+
+
