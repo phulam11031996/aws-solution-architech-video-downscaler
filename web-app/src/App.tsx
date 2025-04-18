@@ -11,7 +11,7 @@ function App() {
     setError(null);
 
     // Replace with your actual EC2 web server URL
-    const apiUrl = "http://localhost:3000/api";
+    const apiUrl = "api";
 
     fetch(apiUrl)
       .then((response) => {
@@ -33,11 +33,7 @@ function App() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-2xl font-bold mb-4">React App Calling EC2 API</h1>
-      <Button
-        onClick={fetchData}
-      >
-        Fetch Data
-      </Button>
+      <Button onClick={fetchData}>Fetch Data</Button>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500 mt-2">Error: {error}</p>}
       {data && (
