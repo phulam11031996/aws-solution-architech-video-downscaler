@@ -23,11 +23,10 @@ resource "aws_subnet" "public" {
 
 # Create Private Subnets
 resource "aws_subnet" "private" {
-  count                   = var.number_of_azs
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 4, count.index + var.number_of_azs) # Avoid overlap with public subnets
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = false # Private subnet should not auto-assign public IPs
+  count             = var.number_of_azs
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 4, count.index + var.number_of_azs) # Avoid overlap with public subnets
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = { Name = "private-subnet-${count.index + 1}" }
 }

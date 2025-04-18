@@ -1,5 +1,5 @@
 output "alb_dns_name" {
-  value = aws_lb.app_alb.dns_name
+  value = aws_lb.web_app_alb.dns_name
 }
 
 output "bastion_public_ip" {

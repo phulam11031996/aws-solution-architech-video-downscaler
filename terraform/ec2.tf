@@ -10,13 +10,15 @@ data "aws_ami" "latest_amazon_linux" {
 }
 
 # Launch EC2 Instances in Public Subnets
-resource "aws_instance" "web" {
+resource "aws_instance" "web_app" {
   count                  = var.number_of_azs
   ami                    = data.aws_ami.latest_amazon_linux.id
   instance_type          = "t2.micro"
   key_name               = var.key_name
   subnet_id              = aws_subnet.public[count.index].id
   vpc_security_group_ids = [aws_security_group.web_app_sg.id]
+
+  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
 
   user_data = <<-EOF
     #!/bin/bash
@@ -36,7 +38,7 @@ resource "aws_instance" "web" {
     <script>
       async function fetchData() {
         try {
-          const response = await fetch('http://${aws_lb.web_server_alb.dns_name}/api');
+          const response = await fetch('http://${aws_lb.web_server_alb.dns_name}');
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -46,7 +48,6 @@ resource "aws_instance" "web" {
           document.getElementById('result').innerHTML = "Error fetching API: " + error;
         }
       }
-      console.log("Hey: ", 'http://${aws_lb.web_server_alb.dns_name}/api')
       fetchData();
     </script>
     HTML
@@ -75,12 +76,17 @@ resource "aws_instance" "web_server" {
     sudo yum install -y docker
     sudo systemctl start docker
     sudo systemctl enable docker
+
+    sudo yum install -y httpd
+    sudo systemctl start httpd
+    sudo systemctl enable httpd
+
     sudo usermod -aG docker ec2-user
     docker pull phulam11031996/web-server:latest
-    docker run -d --name web-server -p 8080:80 --restart unless-stopped phulam11031996/web-server:latest
+    docker run -d --name web-server -p 80:80 --restart unless-stopped phulam11031996/web-server:latest
   EOF
 
-  tags = { Name = "WebServer-EC2-${count.index + 1}" }
+  tags = { Name = "Web-Server-EC2-${count.index + 1}" }
 }
 
 # Launch Bastion Host in Public Subnet
@@ -91,6 +97,8 @@ resource "aws_instance" "bastion" {
   subnet_id                   = aws_subnet.public[0].id # Bastion should be in a public subnet
   vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
   associate_public_ip_address = true # Required for SSH access
+
+  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
 
   tags = { Name = "Bastion-Host" }
 }
