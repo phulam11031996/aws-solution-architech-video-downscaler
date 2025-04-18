@@ -38,7 +38,7 @@ resource "aws_instance" "web_app" {
     <script>
       async function fetchData() {
         try {
-          const response = await fetch('http://${aws_lb.web_server_alb.dns_name}');
+          const response = await fetch('http://${aws_lb.web_server_alb.dns_name}/api');
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -83,7 +83,7 @@ resource "aws_instance" "web_server" {
 
     sudo usermod -aG docker ec2-user
     docker pull phulam11031996/web-server:latest
-    docker run -d --name web-server -p 80:80 --restart unless-stopped phulam11031996/web-server:latest
+    docker run -d --name web-server -p 8080:80 --restart unless-stopped phulam11031996/web-server:latest
   EOF
 
   tags = { Name = "Web-Server-EC2-${count.index + 1}" }

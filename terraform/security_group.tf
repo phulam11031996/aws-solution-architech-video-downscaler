@@ -60,10 +60,10 @@ resource "aws_security_group" "web_server_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8080 # Changed from 80
+    to_port         = 8080
     protocol        = "tcp"
-    security_groups = [aws_security_group.web_server_alb_sg.id] # Allow traffic only from ALB
+    security_groups = [aws_security_group.web_server_alb_sg.id]
     cidr_blocks     = ["0.0.0.0/0"]
   }
 

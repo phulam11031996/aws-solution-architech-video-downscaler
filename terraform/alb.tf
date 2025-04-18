@@ -64,7 +64,7 @@ resource "aws_lb" "web_server_alb" {
 # ALB Target Group
 resource "aws_lb_target_group" "web_server_tg" {
   name     = "web-server-tg"
-  port     = 80
+  port     = 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
 
@@ -98,7 +98,7 @@ resource "aws_lb_target_group_attachment" "web_server_attachment" {
   count            = var.number_of_azs
   target_group_arn = aws_lb_target_group.web_server_tg.arn
   target_id        = aws_instance.web_server[count.index].id
-  port             = 80
+  port             = 8080
 }
 
 # ALB Listener for Web Server
