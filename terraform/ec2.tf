@@ -17,45 +17,32 @@ resource "aws_instance" "web_app" {
   key_name               = var.key_name
   subnet_id              = aws_subnet.public[count.index].id
   vpc_security_group_ids = [aws_security_group.web_app_sg.id]
-
-  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+  iam_instance_profile   = aws_iam_instance_profile.ssm_instance_profile.name
 
   user_data = <<-EOF
-    #!/bin/bash
-    sudo yum update -y
-    sudo yum install -y httpd
-    sudo systemctl start httpd
-    sudo systemctl enable httpd
-    
-    # Store ALB DNS name in environment variable
-    echo "WEB_SERVER_ALB_DNS=${aws_lb.web_server_alb.dns_name}" | sudo tee -a /etc/environment
-    
-    # Create a sample page that connects to the web server API
-    cat <<HTML | sudo tee /var/www/html/index.html
-    <h1>Web Application ${count.index + 1}</h1>
-    <p>This app connects to the web server at: <strong>${aws_lb.web_server_alb.dns_name}</strong></p>
-    <div id="result">Loading...</div>
-    <script>
-      async function fetchData() {
-        try {
-          const response = await fetch('http://${aws_lb.web_server_alb.dns_name}/api');
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          document.getElementById('result').innerHTML = "API Response: " + JSON.stringify(data);
-        } catch (error) {
-          document.getElementById('result').innerHTML = "Error fetching API: " + error;
-        }
-      }
-      fetchData();
-    </script>
-    HTML
+  #!/bin/bash
+  sudo yum update -y
+  
+  # Install and configure Docker
+  sudo amazon-linux-extras install docker -y
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  sudo usermod -aG docker ec2-user
+  
+  # Pull the web app image from Docker Hub
+  docker pull phulam11031996/web-app:latest
+  
+  # Run the container with the ALB DNS environment variable
+  docker run -d \
+    --name web-app \
+    -p 80:80 \
+    --restart unless-stopped \
+    -e ALB_DNS=${aws_lb.web_server_alb.dns_name} \
+    phulam11031996/web-app:latest
   EOF
 
   depends_on = [aws_lb.web_server_alb]
-
-  tags = { Name = "Web-Application-EC2-${count.index + 1}" }
+  tags       = { Name = "Web-Application-EC2-${count.index + 1}" }
 }
 
 # Launch Web Server EC2 Instances in Private Subnets

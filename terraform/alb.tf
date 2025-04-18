@@ -70,7 +70,7 @@ resource "aws_lb_target_group" "web_server_tg" {
 
 
   health_check {
-    path                = "/"
+    path                = "/health"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 3

@@ -14,6 +14,11 @@ app.use(
   }),
 );
 
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.get("/api", (req, res) => {
   console.log("Received GET request");
   res.json({ message: "Hello from EC2 Web Server!" });
