@@ -15,6 +15,7 @@ app.use(
 );
 
 app.get("/api", (req, res) => {
+  console.log("Received GET request");
   res.json({ message: "Hello from EC2 Web Server!" });
 });
 

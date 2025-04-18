@@ -76,11 +76,6 @@ resource "aws_instance" "web_server" {
     sudo yum install -y docker
     sudo systemctl start docker
     sudo systemctl enable docker
-
-    sudo yum install -y httpd
-    sudo systemctl start httpd
-    sudo systemctl enable httpd
-
     sudo usermod -aG docker ec2-user
     docker pull phulam11031996/web-server:latest
     docker run -d --name web-server -p 8080:80 --restart unless-stopped phulam11031996/web-server:latest
