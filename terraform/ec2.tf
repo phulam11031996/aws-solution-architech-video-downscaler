@@ -17,7 +17,8 @@ resource "aws_instance" "web_app" {
   key_name               = var.key_name
   subnet_id              = aws_subnet.public[count.index].id
   vpc_security_group_ids = [aws_security_group.web_app_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.ssm_instance_profile.name
+
+  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
   user_data = <<-EOF
   #!/bin/bash
@@ -51,7 +52,7 @@ resource "aws_instance" "web_server" {
   subnet_id              = aws_subnet.private[count.index].id
   vpc_security_group_ids = [aws_security_group.web_server_sg.id]
 
-  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ssm_s3_profile.name
 
   user_data = <<-EOF
     #!/bin/bash
