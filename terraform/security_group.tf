@@ -21,7 +21,6 @@ resource "aws_security_group" "web_app_sg" {
   tags = { Name = "web-app-sg" }
 }
 
-
 # Security Group for ALB
 resource "aws_security_group" "web_app_alb_sg" {
   name        = "alb-security-group"
@@ -51,7 +50,6 @@ resource "aws_security_group" "web_app_alb_sg" {
 
   tags = { Name = "web-app-alb-sg" }
 }
-
 
 # Security Group for Web Server EC2 Instances
 resource "aws_security_group" "web_server_sg" {
@@ -109,44 +107,11 @@ resource "aws_security_group" "web_server_alb_sg" {
   tags = { Name = "web-server-alb-sg" }
 }
 
-# Security Group for Bastion Host
-resource "aws_security_group" "bastion_sg" {
-  name        = "bastion-sg"
-  description = "Allow SSH from a specific IP range"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Replace with your actual IP
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "bastion-sg" }
-}
-
-# Allow SSH from Bastion to Web Application EC2
-resource "aws_security_group_rule" "allow_http_from_bastion" {
-  type              = "egress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  security_group_id = aws_security_group.bastion_sg.id
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-
 # NAT Gateway and Route Table for Private Subnets
 resource "aws_eip" "nat" {
   domain = "vpc"
 }
+
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
@@ -155,6 +120,7 @@ resource "aws_nat_gateway" "nat" {
     Name = "NAT-Gateway"
   }
 }
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
@@ -167,10 +133,10 @@ resource "aws_route_table" "private" {
     Name = "Private-RT"
   }
 }
+
 resource "aws_route_table_association" "private" {
   count          = var.number_of_azs
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
 }
-
 

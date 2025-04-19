@@ -22,17 +22,14 @@ resource "aws_instance" "web_app" {
   user_data = <<-EOF
   #!/bin/bash
   sudo yum update -y
-  
-  # Install and configure Docker
+
   sudo amazon-linux-extras install docker -y
   sudo systemctl start docker
   sudo systemctl enable docker
   sudo usermod -aG docker ec2-user
   
-  # Pull the web app image from Docker Hub
   docker pull phulam11031996/web-app:latest
   
-  # Run the container with the ALB DNS environment variable
   docker run -d \
     --name web-app \
     -p 80:80 \
@@ -42,7 +39,7 @@ resource "aws_instance" "web_app" {
   EOF
 
   depends_on = [aws_lb.web_server_alb]
-  tags       = { Name = "Web-Application-EC2-${count.index + 1}" }
+  tags       = { Name = "Web-Application-${count.index + 1}" }
 }
 
 # Launch Web Server EC2 Instances in Private Subnets
@@ -68,21 +65,6 @@ resource "aws_instance" "web_server" {
     docker run -d --name web-server -p 8080:80 --restart unless-stopped phulam11031996/web-server:latest
   EOF
 
-  tags = { Name = "Web-Server-EC2-${count.index + 1}" }
+  tags = { Name = "Web-Server-${count.index + 1}" }
 }
-
-# Launch Bastion Host in Public Subnet
-resource "aws_instance" "bastion" {
-  ami                         = data.aws_ami.latest_amazon_linux.id
-  instance_type               = "t2.micro"
-  key_name                    = var.key_name
-  subnet_id                   = aws_subnet.public[0].id # Bastion should be in a public subnet
-  vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
-  associate_public_ip_address = true # Required for SSH access
-
-  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
-
-  tags = { Name = "Bastion-Host" }
-}
-
 

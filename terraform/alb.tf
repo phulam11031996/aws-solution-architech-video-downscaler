@@ -56,7 +56,6 @@ resource "aws_lb" "web_server_alb" {
   security_groups    = [aws_security_group.web_server_alb_sg.id]
   subnets            = aws_subnet.private[*].id
 
-
   tags = { Name = "web-server-alb" }
 }
 
@@ -67,7 +66,6 @@ resource "aws_lb_target_group" "web_server_tg" {
   port     = 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
-
 
   health_check {
     path                = "/health"
@@ -112,5 +110,4 @@ resource "aws_lb_listener" "web_server_listener" {
     target_group_arn = aws_lb_target_group.web_server_tg.arn
   }
 }
-
 

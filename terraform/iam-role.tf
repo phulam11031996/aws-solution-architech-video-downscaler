@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ssm_instance_role" {
-  name = "ssm_instance_role"
+  name = "AmazonSSMManagedInstanceCore"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -21,6 +21,7 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 }
 
 resource "aws_iam_instance_profile" "ssm_instance_profile" {
-  name = "ssm_instance_profile"
+  name = "AmazonSSMManagedInstanceCoreProfile"
   role = aws_iam_role.ssm_instance_role.name
 }
+

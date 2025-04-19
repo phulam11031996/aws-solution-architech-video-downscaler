@@ -31,8 +31,3 @@ variable "web_server_dockerhub_image" {
   type        = string
 }
 
-
-variable "alb_name" {
-  description = "Name of the Application Load Balancer"
-  type        = string
-}
