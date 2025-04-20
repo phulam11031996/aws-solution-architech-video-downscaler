@@ -25,50 +25,73 @@ app.get("/health", (req, res) => {
 
 // Endpoint to get both GET and PUT presigned URLs for the same object
 app.get("/api", (req, res) => {
-  const bucketName = "video-scaler-bucket-phulam1103"; // your S3 bucket name
+  const bucketName = "video-scaler-bucket-phulam1103";
 
-  const generateRandomFilename = () => {
-    const timestamp = Date.now(); // Get current timestamp
-    const randomString = Math.random().toString(36).substring(2, 10); // Generate a random alphanumeric string
-    return `${timestamp}-${randomString}.txt`; // Example file extension
-  };
-  const fileName = generateRandomFilename(); // Generate a random filename
-
-  if (!fileName) {
-    return res.status(400).json({ error: "Missing fileName parameter" });
-  }
-
-  const params = {
-    Bucket: bucketName,
-    Key: fileName,
-    Expires: 60, // URL expiry time in seconds
+  const generateRandomFilename = (prefix = "") => {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 10);
+    return `${prefix}${timestamp}-${randomString}.mp4`;
   };
 
-  // Generate GET presigned URL (for downloading)
-  s3.getSignedUrl("getObject", params, (err, getUrl) => {
-    if (err) {
-      console.error("Error generating GET presigned URL", err);
-      return res
-        .status(500)
-        .json({ error: "Failed to generate GET presigned URL" });
-    }
+  const generatePresignedUrls = (fileName) => {
+    const params = {
+      Bucket: bucketName,
+      Key: fileName,
+      Expires: 60,
+    };
 
-    // Generate PUT presigned URL (for uploading)
-    s3.getSignedUrl("putObject", params, (err, putUrl) => {
-      if (err) {
-        console.error("Error generating PUT presigned URL", err);
-        return res
-          .status(500)
-          .json({ error: "Failed to generate PUT presigned URL" });
-      }
-
-      // Return both GET and PUT URLs in the response
-      res.json({
-        getUrl,
-        putUrl,
+    return new Promise((resolve, reject) => {
+      s3.getSignedUrl("putObject", params, (err, putUrl) => {
+        if (err) return reject(err);
+        s3.getSignedUrl("getObject", params, (err, getUrl) => {
+          if (err) return reject(err);
+          resolve({ putUrl, getUrl });
+        });
       });
     });
-  });
+  };
+
+  (async () => {
+    try {
+      const originalFileName = generateRandomFilename("original-");
+      const downscaleX1File = generateRandomFilename("x1-");
+      const downscaleX2File = generateRandomFilename("x2-");
+      const downscaleX3File = generateRandomFilename("x3-");
+
+      const [originalUrls, x1Urls, x2Urls, x3Urls] = await Promise.all([
+        generatePresignedUrls(originalFileName),
+        generatePresignedUrls(downscaleX1File),
+        generatePresignedUrls(downscaleX2File),
+        generatePresignedUrls(downscaleX3File),
+      ]);
+
+      res.json({
+        downScaleX0: {
+          fileName: originalFileName,
+          putPresignedUrl: originalUrls.putUrl,
+          getPresignedUrl: originalUrls.getUrl,
+        },
+        downScaleX1: {
+          fileName: downscaleX1File,
+          putPresignedUrl: x1Urls.putUrl,
+          getPresignedUrl: x1Urls.getUrl,
+        },
+        downScaleX2: {
+          fileName: downscaleX2File,
+          putPresignedUrl: x2Urls.putUrl,
+          getPresignedUrl: x2Urls.getUrl,
+        },
+        downScaleX3: {
+          fileName: downscaleX3File,
+          putPresignedUrl: x3Urls.putUrl,
+          getPresignedUrl: x3Urls.getUrl,
+        },
+      });
+    } catch (error) {
+      console.error("Error generating presigned URLs", error);
+      res.status(500).json({ error: "Failed to generate presigned URLs" });
+    }
+  })();
 });
 
 app.listen(PORT, () => {
