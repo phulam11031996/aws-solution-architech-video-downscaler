@@ -1,46 +1,105 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useRef, useState } from "react";
 
 function App() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const fetchData = () => {
+  const uploadVideo = async () => {
     setLoading(true);
     setError(null);
 
-    // Replace with your actual EC2 web server URL
-    const apiUrl = "api";
+    const file = fileInputRef.current?.files?.[0];
 
-    fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
+    if (!file) {
+      setError("Please select a video file to upload.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("api");
+      if (!response.ok) {
+        throw new Error("Failed to get presigned URLs");
+      }
+
+      const data = await response.json();
+      const { putPresignedUrl, fileName } = data.downScaleX0;
+
+      const uploadResponse = await fetch(putPresignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
       });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload video to S3");
+      }
+
+      console.log("Video uploaded to S3 successfully", fileName);
+    } catch (err: any) {
+      console.error("Error uploading video:", err);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">React App Calling EC2 API</h1>
-      <Button onClick={fetchData}>Fetch Data</Button>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500 mt-2">Error: {error}</p>}
-      {data && (
-        <pre className="bg-white p-4 rounded shadow-md mt-4">
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <Card className="w-[350px] bg-white text-black">
+        <CardHeader>
+          <CardTitle>Upload Video</CardTitle>
+          <CardDescription>
+            Upload a video to downscale the video
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="video">Video</Label>
+                <Input
+                  ref={fileInputRef}
+                  id="video"
+                  type="file"
+                  accept="video/*"
+                />
+              </div>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline">Cancel</Button>
+          <Button onClick={uploadVideo} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin mr-2" />
+                Please wait
+              </>
+            ) : (
+              "Upload Video"
+            )}
+          </Button>
+        </CardFooter>
+        <CardFooter className="flex justify-between">
+          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+        </CardFooter>
+      </Card>
     </div>
   );
 }
