@@ -31,6 +31,16 @@ resource "aws_subnet" "private" {
   tags = { Name = "private-subnet-${count.index + 1}" }
 }
 
+# Create dedicated private subnets for video processing
+resource "aws_subnet" "private_video" {
+  count             = var.number_of_azs # Assuming var.number_of_azs = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 4, 2 * var.number_of_azs + count.index)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  tags              = { Name = "private-video-subnet-${count.index + 1}" }
+}
+
+
 # Create Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
@@ -43,17 +53,17 @@ resource "aws_route_table" "public" {
   tags   = { Name = "public-route-table" }
 }
 
-# Create Public Route to IGW
-resource "aws_route" "public_internet_access" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.igw.id
-}
-
 # Associate Public Subnets with Route Table
 resource "aws_route_table_association" "public" {
   count          = var.number_of_azs
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
+}
+
+# Create Public Route to IGW
+resource "aws_route" "public_internet_access" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.igw.id
 }
 

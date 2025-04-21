@@ -69,3 +69,15 @@ resource "aws_instance" "web_server" {
   tags = { Name = "Web-Server-${count.index + 1}" }
 }
 
+# Create six EC2 instances (3 in each subnet) for video downscaling
+resource "aws_instance" "video_downscaler" {
+  count         = var.number_of_azs * 3
+  ami           = data.aws_ami.latest_amazon_linux.id
+  instance_type = "t2.micro"
+  key_name      = var.key_name
+  subnet_id     = aws_subnet.private_video[floor(count.index / 3)].id
+
+  tags = {
+    Name = "Video-Downscaler-X${(count.index % 3) + 1}-${floor(count.index / 3) + 1}"
+  }
+}
