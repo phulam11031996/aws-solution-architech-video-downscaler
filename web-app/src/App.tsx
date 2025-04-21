@@ -45,7 +45,6 @@ function App() {
 
       const data = await response.json();
       const { putPresignedUrl, fileName } = data.downScaleX0;
-      console.log("fileType", file.type);
 
       const uploadResponse = await fetch(putPresignedUrl, {
         headers: {
