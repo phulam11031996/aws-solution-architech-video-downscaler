@@ -64,14 +64,18 @@ resource "aws_iam_role_policy" "ssm_s3_s3_policy" {
       {
         Effect = "Allow",
         Action = [
-          "s3:GetObject",
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:GetObject"
         ],
-        Resource = "${aws_s3_bucket.video_scaler_bucket.arn}/*"
+        Resource = [
+          "${aws_s3_bucket.video_scaler_bucket.arn}/*",
+          "${aws_s3_bucket.video_scaler_bucket.arn}"
+        ]
       }
     ]
   })
 }
+
 
 # Instance Profile for EC2 with SSM+S3 Role
 resource "aws_iam_instance_profile" "ssm_s3_profile" {

@@ -1,22 +1,28 @@
 const express = require("express");
-const cors = require("cors"); // Import CORS package
+const cors = require("cors");
 const AWS = require("aws-sdk");
 
 const app = express();
 const PORT = process.env.PORT || 80;
 
-// Enable CORS for all requests and methods
+// Middleware for parsing JSON and URL-encoded request bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "*", // Allow requests from any origin
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Allow all methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow common headers
-    credentials: true, // Allow credentials (if needed)
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   }),
 );
 
 // Set up AWS SDK for S3
 const s3 = new AWS.S3();
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -24,39 +30,50 @@ app.get("/health", (req, res) => {
 });
 
 // Endpoint to get both GET and PUT presigned URLs for the same object
-app.get("/api", (req, res) => {
+app.post("/api", (req, res) => {
   const bucketName = "video-scaler-bucket-phulam1103";
+  const contentType = req.body.fileType;
 
-  const generateRandomFilename = (prefix = "") => {
+  const generateRandomFilename = (prefix, contentType) => {
     const timestamp = Date.now();
+    const mineType = contentType.split("/")[1];
     const randomString = Math.random().toString(36).substring(2, 10);
-    return `${prefix}${timestamp}-${randomString}.mp4`;
+    return `${prefix}${timestamp}-${randomString}.${mineType}`;
   };
 
   const generatePresignedUrls = (fileName) => {
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-      Expires: 60,
-    };
-
     return new Promise((resolve, reject) => {
-      s3.getSignedUrl("putObject", params, (err, putUrl) => {
-        if (err) return reject(err);
-        s3.getSignedUrl("getObject", params, (err, getUrl) => {
+      s3.getSignedUrl(
+        "putObject",
+        {
+          Key: fileName,
+          Bucket: bucketName,
+          ContentType: contentType,
+        },
+        (err, putUrl) => {
           if (err) return reject(err);
-          resolve({ putUrl, getUrl });
-        });
-      });
+          s3.getSignedUrl(
+            "getObject",
+            {
+              Key: fileName,
+              Bucket: bucketName,
+            },
+            (err, getUrl) => {
+              if (err) return reject(err);
+              resolve({ putUrl, getUrl });
+            },
+          );
+        },
+      );
     });
   };
 
   (async () => {
     try {
-      const originalFileName = generateRandomFilename("original-");
-      const downscaleX1File = generateRandomFilename("x1-");
-      const downscaleX2File = generateRandomFilename("x2-");
-      const downscaleX3File = generateRandomFilename("x3-");
+      const originalFileName = generateRandomFilename("original-", contentType);
+      const downscaleX1File = generateRandomFilename("x1-", contentType);
+      const downscaleX2File = generateRandomFilename("x2-", contentType);
+      const downscaleX3File = generateRandomFilename("x3-", contentType);
 
       const [originalUrls, x1Urls, x2Urls, x3Urls] = await Promise.all([
         generatePresignedUrls(originalFileName),
@@ -92,8 +109,4 @@ app.get("/api", (req, res) => {
       res.status(500).json({ error: "Failed to generate presigned URLs" });
     }
   })();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });

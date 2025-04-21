@@ -30,19 +30,28 @@ function App() {
     }
 
     try {
-      const response = await fetch("api");
+      const response = await fetch("api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fileType: file.type,
+        }),
+      });
       if (!response.ok) {
         throw new Error("Failed to get presigned URLs");
       }
 
       const data = await response.json();
       const { putPresignedUrl, fileName } = data.downScaleX0;
+      console.log("fileType", file.type);
 
       const uploadResponse = await fetch(putPresignedUrl, {
-        method: "PUT",
         headers: {
           "Content-Type": file.type,
         },
+        method: "PUT",
         body: file,
       });
 
