@@ -32,6 +32,12 @@ push-server:
 	docker login
 	docker push phulam11031996/web-server
 
+push-worker:
+	docker build -t web-worker ./web-worker
+	docker tag web-worker phulam11031996/web-worker
+	docker login
+	docker push phulam11031996/web-worker
+
 push-all:
 	docker build -t web-app ./web-app
 	docker tag web-app phulam11031996/web-app
@@ -41,4 +47,8 @@ push-all:
 	docker tag web-server phulam11031996/web-server
 	docker login
 	docker push phulam11031996/web-server
+	docker build -t web-worker ./web-worker
+	docker tag web-worker phulam11031996/web-worker
+	docker login
+	docker push phulam11031996/web-worker
 
