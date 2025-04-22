@@ -52,19 +52,25 @@ resource "aws_instance" "web_server" {
   subnet_id              = aws_subnet.private[count.index].id
   vpc_security_group_ids = [aws_security_group.web_server_sg.id]
 
-  iam_instance_profile = aws_iam_instance_profile.ssm_s3_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ssm_s3_publish_sns_profile.name
 
   user_data = <<-EOF
-    #!/bin/bash
-    sudo yum update -y
-    sudo amazon-linux-extras enable docker
-    sudo yum install -y docker
-    sudo systemctl start docker
-    sudo systemctl enable docker
-    sudo usermod -aG docker ec2-user
-    docker pull phulam11031996/web-server:latest
-    docker run -d --name web-server -p 8080:80 --restart unless-stopped phulam11031996/web-server:latest
-  EOF
+  #!/bin/bash
+  sudo yum update -y
+  sudo amazon-linux-extras enable docker
+  sudo yum install -y docker
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  sudo usermod -aG docker ec2-user
+  docker pull phulam11031996/web-server:latest
+  docker run -d \
+    --name web-server \
+    -e TOPIC_ARN=${aws_sns_topic.video_scaler_topic.arn} \
+    -e AWS_REGION=${var.aws_region} \
+    -p 8080:80 \
+    --restart unless-stopped \
+    phulam11031996/web-server:latest
+EOF
 
   tags = { Name = "Web-Server-${count.index + 1}" }
 }

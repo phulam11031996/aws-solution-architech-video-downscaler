@@ -20,6 +20,13 @@ app.use(
 // Set up AWS SDK for S3
 const s3 = new AWS.S3();
 
+// Set up AWS SDK for SNS
+const sns = new AWS.SNS({
+  region: process.env.AWS_REGION,
+});
+
+// Your application logic here
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
@@ -81,6 +88,22 @@ app.post("/api", (req, res) => {
         generatePresignedUrls(downscaleX2File),
         generatePresignedUrls(downscaleX3File),
       ]);
+
+      const snsMessage = {
+        original: originalFileName,
+        x1: downscaleX1File,
+        x2: downscaleX2File,
+        x3: downscaleX3File,
+        contentType,
+        timestamp: Date.now(),
+      };
+
+      const snsParams = {
+        TopicArn: process.env.TOPIC_ARN,
+        Message: JSON.stringify(snsMessage),
+      };
+
+      await sns.publish(snsParams).promise();
 
       res.json({
         downScaleX0: {
