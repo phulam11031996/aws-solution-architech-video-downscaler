@@ -2,11 +2,15 @@ name: Terraform Format & Validate
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'terraform/**.tf'
+      - "terraform/**.tf"
   pull_request:
+    branches:
+      - main
     paths:
-      - 'terraform/**.tf'
+      - "terraform/**.tf"
 
 jobs:
   terraform:
@@ -28,3 +32,4 @@ jobs:
 
       - name: Terraform Validate
         run: terraform -chdir=terraform validate
+
