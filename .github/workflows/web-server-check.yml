@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - "web-server/**"
+    paths:
+      - "web-server/**"
   pull_request:
     branches:
       - main
-    # paths:
-    #   - "web-server/**"
+    paths:
+      - "web-server/**"
 
 jobs:
   lint_and_format:
