@@ -1,0 +1,44 @@
+name: Web App Lint and Format
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "web-app/**"
+      - ".github/workflows/web-app-check.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "web-app/**"
+      - ".github/workflows/web-app-check.yml"
+
+jobs:
+  lint-and-format:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: |
+          cd web-app
+          npm ci
+
+      - name: Run ESLint
+        run: |
+          cd web-app
+          npm run lint
+
+      - name: Run Prettier Check
+        run: |
+          cd web-app
+          npm run format:check
