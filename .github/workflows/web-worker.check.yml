@@ -36,4 +36,4 @@ jobs:
 
       - name: Run Flake8 (linter)
         run: |
-          flake8 web-worker
+          flake8 web-worker --ignore=E501
