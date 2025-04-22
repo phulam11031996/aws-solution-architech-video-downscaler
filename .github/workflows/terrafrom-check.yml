@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "terraform/**.tf"
-      - ".github/workflows/terraform-check.yml"
+    # paths:
+    #   - "terraform/**.tf"
+    #   - ".github/workflows/terraform-check.yml"
   pull_request:
     branches:
       - main
@@ -46,6 +46,12 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+
+      - name: Set dummy AWS credentials
+        run: |
+          echo "AWS_ACCESS_KEY_ID=dummy" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=dummy" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
 
       - name: Terraform Init
         run: terraform -chdir=terraform init -backend=false
