@@ -1,4 +1,4 @@
-name: Web App Lint and Format
+name: Web App Lint and Format (Web App)
 
 on:
   push:

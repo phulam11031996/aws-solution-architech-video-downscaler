@@ -1,4 +1,4 @@
-name: Terraform Format & Validate
+name: Terraform Format & Validate (Terraform)
 
 on:
   push:

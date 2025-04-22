@@ -1,4 +1,4 @@
-name: Lint and Format Check
+name: Lint and Format Check (Web Server)
 
 on:
   push:

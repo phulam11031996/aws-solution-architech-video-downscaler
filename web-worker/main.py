@@ -31,8 +31,8 @@ def main():
 
                 # Delete the message from the queue after processing
                 sqs.delete_message(
-                    QueueUrl=SQS_QUEUE_URL, ReceiptHandle=message["ReceiptHandle"]
-                )
+                    QueueUrl=SQS_QUEUE_URL,
+                    ReceiptHandle=message["ReceiptHandle"])
 
         time.sleep(5)
 
