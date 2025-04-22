@@ -1,0 +1,46 @@
+name: Lint and Format Check
+
+on:
+  push:
+    branches:
+      - main
+  #   paths:
+  #     - "web-server/**"
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "web-server/**"
+
+jobs:
+  lint_and_format:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the PR
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd web-server
+          npm install
+
+      # Run ESLint to check for code quality
+      - name: Run ESLint
+        run: |
+          cd web-server
+          npm run lint
+
+      # Run Prettier to check if code is properly formatted
+      - name: Run Prettier check
+        run: |
+          cd web-server
+          npm run format:check
