@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - "web-server/**"
+      - ".github/workflows/web-server-check.yml"
   pull_request:
     branches:
       - main
     paths:
       - "web-server/**"
+      - ".github/workflows/web-server-check.yml"
 
 jobs:
   lint_and_format:
