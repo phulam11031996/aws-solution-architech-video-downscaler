@@ -18,21 +18,16 @@ app.use(
   })
 );
 
-// Set up AWS SDK for S3
+// Set up AWS SDK
 const s3 = new AWS.S3();
-
-// Set up AWS SDK for SNS
 const sns = new AWS.SNS({
   region: process.env.AWS_REGION,
 });
-
-// Your application logic here
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
