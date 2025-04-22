@@ -1,7 +1,8 @@
 /* eslint no-undef: "off" */
-import express from 'express';
-import cors from 'cors';
-import AWS from 'aws-sdk';
+/* eslint-disable @typescript-eslint/no-require-imports */
+const express = require('express');
+const cors = require('cors');
+const AWS = require('aws-sdk');
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -37,11 +38,10 @@ app.post('/api', (req, res) => {
   const bucketName = 'video-scaler-bucket-phulam1103';
   const contentType = req.body.fileType;
 
-  const generateRandomFilename = (prefix, contentType) => {
+  const generateRandomFilename = () => {
     const timestamp = Date.now();
-    const mineType = contentType.split('/')[1];
     const randomString = Math.random().toString(36).substring(2, 10);
-    return `${prefix}${timestamp}-${randomString}.${mineType}`;
+    return `${timestamp}-${randomString}`;
   };
 
   const generatePresignedUrls = (fileName) => {
@@ -73,24 +73,37 @@ app.post('/api', (req, res) => {
 
   (async () => {
     try {
-      const originalFileName = generateRandomFilename('original-', contentType);
-      const downscaleX1File = generateRandomFilename('x1-', contentType);
-      const downscaleX2File = generateRandomFilename('x2-', contentType);
-      const downscaleX3File = generateRandomFilename('x3-', contentType);
+      const fileNamePostfix = generateRandomFilename();
+      const mineType = contentType.split('/')[1];
 
-      const [originalUrls, x1Urls, x2Urls, x3Urls] = await Promise.all([
-        generatePresignedUrls(originalFileName),
-        generatePresignedUrls(downscaleX1File),
-        generatePresignedUrls(downscaleX2File),
-        generatePresignedUrls(downscaleX3File),
+      const [x0Urls, x1Urls, x2Urls, x3Urls] = await Promise.all([
+        generatePresignedUrls(`${fileNamePostfix}/x0.${mineType}`),
+        generatePresignedUrls(`${fileNamePostfix}/x1.${mineType}`),
+        generatePresignedUrls(`${fileNamePostfix}/x2.${mineType}`),
+        generatePresignedUrls(`${fileNamePostfix}/x3.${mineType}`),
       ]);
 
+      const responsePayload = {
+        downScaleX0: {
+          putPresignedUrl: x0Urls.putUrl,
+          getPresignedUrl: x0Urls.getUrl,
+        },
+        downScaleX1: {
+          putPresignedUrl: x1Urls.putUrl,
+          getPresignedUrl: x1Urls.getUrl,
+        },
+        downScaleX2: {
+          putPresignedUrl: x2Urls.putUrl,
+          getPresignedUrl: x2Urls.getUrl,
+        },
+        downScaleX3: {
+          putPresignedUrl: x3Urls.putUrl,
+          getPresignedUrl: x3Urls.getUrl,
+        },
+      };
+
       const snsMessage = {
-        original: originalFileName,
-        x1: downscaleX1File,
-        x2: downscaleX2File,
-        x3: downscaleX3File,
-        contentType,
+        ...responsePayload,
         timestamp: Date.now(),
       };
 
@@ -101,28 +114,7 @@ app.post('/api', (req, res) => {
 
       await sns.publish(snsParams).promise();
 
-      res.json({
-        downScaleX0: {
-          fileName: originalFileName,
-          putPresignedUrl: originalUrls.putUrl,
-          getPresignedUrl: originalUrls.getUrl,
-        },
-        downScaleX1: {
-          fileName: downscaleX1File,
-          putPresignedUrl: x1Urls.putUrl,
-          getPresignedUrl: x1Urls.getUrl,
-        },
-        downScaleX2: {
-          fileName: downscaleX2File,
-          putPresignedUrl: x2Urls.putUrl,
-          getPresignedUrl: x2Urls.getUrl,
-        },
-        downScaleX3: {
-          fileName: downscaleX3File,
-          putPresignedUrl: x3Urls.putUrl,
-          getPresignedUrl: x3Urls.getUrl,
-        },
-      });
+      res.json(responsePayload);
     } catch (error) {
       console.error('Error generating presigned URLs', error);
       res.status(500).json({ error: 'Failed to generate presigned URLs' });
