@@ -19,27 +19,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code from the PR
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      # Install dependencies in the web-server directory
       - name: Install dependencies
         run: |
           npm install --prefix web-server
 
-      # Run ESLint to check for code quality
       - name: Run ESLint
         run: |
           npm run lint --prefix web-server
 
-      # Run Prettier to check if code is properly formatted
       - name: Run Prettier check
         run: |
           npm run format:check --prefix web-server

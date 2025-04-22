@@ -3,7 +3,6 @@ resource "aws_s3_bucket" "video_scaler_bucket" {
   bucket = "video-scaler-bucket-phulam1103"
 }
 
-
 resource "aws_s3_bucket_cors_configuration" "video_scaler_bucket_cors" {
   bucket = aws_s3_bucket.video_scaler_bucket.id
 
