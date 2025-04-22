@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { useRef, useState } from "react";
+} from '@/components/ui/card';
+import { useRef, useState } from 'react';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,23 +24,23 @@ function App() {
     const file = fileInputRef.current?.files?.[0];
 
     if (!file) {
-      setError("Please select a video file to upload.");
+      setError('Please select a video file to upload.');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch("api", {
-        method: "POST",
+      const response = await fetch('api', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           fileType: file.type,
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to get presigned URLs");
+        throw new Error('Failed to get presigned URLs');
       }
 
       const data = await response.json();
@@ -48,20 +48,25 @@ function App() {
 
       const uploadResponse = await fetch(putPresignedUrl, {
         headers: {
-          "Content-Type": file.type,
+          'Content-Type': file.type,
         },
-        method: "PUT",
+        method: 'PUT',
         body: file,
       });
 
       if (!uploadResponse.ok) {
-        throw new Error("Failed to upload video to S3");
+        throw new Error('Failed to upload video to S3');
       }
 
-      console.log("Video uploaded to S3 successfully", fileName);
-    } catch (err: any) {
-      console.error("Error uploading video:", err);
-      setError(err.message || "Something went wrong");
+      console.log('Video uploaded to S3 successfully', fileName);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Error uploading video:', err);
+        setError(err.message || 'Something went wrong');
+      } else {
+        console.error('Unknown error uploading video:', err);
+        setError('Something went wrong');
+      }
     } finally {
       setLoading(false);
     }
@@ -100,7 +105,7 @@ function App() {
                 Please wait
               </>
             ) : (
-              "Upload Video"
+              'Upload Video'
             )}
           </Button>
         </CardFooter>
