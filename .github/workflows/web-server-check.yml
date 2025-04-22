@@ -1,16 +1,11 @@
 name: Lint and Format Check
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  #   paths:
-  #     - "web-server/**"
-  # pull_request:
-  #   branches:
-  #     - main
-  #   paths:
-  #     - "web-server/**"
+    paths:
+      - "web-server/**"
 
 jobs:
   lint_and_format:
@@ -27,20 +22,17 @@ jobs:
         with:
           node-version: "16"
 
-      # Install dependencies
+      # Install dependencies in the web-server directory
       - name: Install dependencies
         run: |
-          cd web-server
-          npm install
+          npm install --prefix web-server
 
       # Run ESLint to check for code quality
       - name: Run ESLint
         run: |
-          cd web-server
-          npm run lint
+          npm run lint --prefix web-server
 
       # Run Prettier to check if code is properly formatted
       - name: Run Prettier check
         run: |
-          cd web-server
-          npm run format:check
+          npm run format:check --prefix web-server
