@@ -62,7 +62,11 @@ type DownscaleRequestQuery = {};
 app.post(
   '/downscale-videos',
   async (
-    req: Request<DownscalreRequestData, DownscaleRequestQuery, DownscaleRequestBody>,
+    req: Request<
+      DownscalreRequestData,
+      DownscaleRequestQuery,
+      DownscaleRequestBody
+    >,
     res: Response<DownscaleResponsePayload>
   ) => {
     const contentType = req.body.fileType;
@@ -133,9 +137,7 @@ app.post(
       res.json(responsePayload);
     } catch (error) {
       console.error('Error generating presigned URLs', error);
-      res
-        .status(500)
-        .json({ error: 'Failed to generate presigned URLs' });
+      res.status(500).json({ error: 'Failed to generate presigned URLs' });
     }
   }
 );
