@@ -1,8 +1,6 @@
-/* eslint no-undef: "off" */
-/* eslint-disable @typescript-eslint/no-require-imports */
-const express = require('express');
-const cors = require('cors');
-const AWS = require('aws-sdk');
+import express from 'express';
+import cors from 'cors';
+import { S3, SNS } from 'aws-sdk';
 import { Request, Response } from 'express';
 
 const app = express();
@@ -23,8 +21,8 @@ app.use(
 );
 
 // Set up AWS SDK
-const s3 = new AWS.S3();
-const sns = new AWS.SNS({
+const s3 = new S3();
+const sns = new SNS({
   region: process.env.AWS_REGION,
 });
 
