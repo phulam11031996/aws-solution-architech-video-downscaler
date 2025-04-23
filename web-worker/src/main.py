@@ -1,13 +1,28 @@
 import asyncio
 import json
+import os
 
+from dotenv import load_dotenv
 from presigned_url_handler import PresignedURLHandler
 from sqs_manager import SQSManager
 
+load_dotenv()
+
 
 async def main():
-    sqs_manager = SQSManager()
-    handler = PresignedURLHandler()
+    SQS_QUEUE_URL = os.getenv("SQS_QUEUE_URL")
+    AWS_REGION = os.getenv("AWS_REGION")
+    if "x1" in SQS_QUEUE_URL:
+        target_key = "downScaleX1"
+    elif "x2" in SQS_QUEUE_URL:
+        target_key = "downScaleX2"
+    elif "x3" in SQS_QUEUE_URL:
+        target_key = "downScaleX3"
+    else:
+        raise ValueError(f"Unknown target based on queue URL: {SQS_QUEUE_URL}")
+
+    sqs_manager = SQSManager(region=AWS_REGION, queue_url=SQS_QUEUE_URL)
+    handler = PresignedURLHandler(queue_url=SQS_QUEUE_URL, target_key=target_key)
 
     while True:
         # Poll for messages from SQS

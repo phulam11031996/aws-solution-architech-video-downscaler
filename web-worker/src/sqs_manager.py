@@ -1,16 +1,10 @@
-import os
-
 import boto3
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class SQSManager:
-    def __init__(self):
-        region = os.getenv("AWS_REGION")
-        self.queue_url = os.getenv("SQS_QUEUE_URL")
+    def __init__(self, region: str, queue_url: str):
         self.client = boto3.client("sqs", region_name=region)
+        self.queue_url = queue_url
 
     def poll_for_sqs_message(self):
         response = self.client.receive_message(

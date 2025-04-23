@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 import time
 
 import aiohttp
@@ -10,8 +9,11 @@ load_dotenv()
 
 
 class PresignedURLHandler:
-    def __init__(self, poll_interval: int = 5, timeout: int = 60):
-        self.queue_url = os.getenv("SQS_QUEUE_URL")
+    def __init__(
+        self, queue_url: str, target_key: str, poll_interval: int = 5, timeout: int = 60
+    ):
+        self.target_key = target_key
+        self.queue_url = queue_url
         self.poll_interval = poll_interval
         self.timeout = timeout
         self.body = None
@@ -44,20 +46,12 @@ class PresignedURLHandler:
                 await asyncio.sleep(self.poll_interval)
 
     async def upload_to_put_presigned_url(self, video_data: bytes):
-        target_key = None
 
-        if "x1" in self.queue_url:
-            target_key = "downScaleX1"
-        elif "x2" in self.queue_url:
-            target_key = "downScaleX2"
-        elif "x3" in self.queue_url:
-            target_key = "downScaleX3"
-        else:
-            raise ValueError(f"Unknown target based on queue URL: {self.queue_url}")
-
-        put_presigned_url = self.body.get(target_key, {}).get("putPresignedUrl")
+        put_presigned_url = self.body.get(self.target_key, {}).get("putPresignedUrl")
         if not put_presigned_url:
-            raise ValueError(f"Missing '{target_key}.putPresignedUrl' in message body")
+            raise ValueError(
+                f"Missing '{self.target_key}.putPresignedUrl' in message body"
+            )
 
         try:
             async with aiohttp.ClientSession() as session:
