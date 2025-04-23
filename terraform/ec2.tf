@@ -65,8 +65,9 @@ resource "aws_instance" "web_server" {
     docker pull phulam11031996/web-server:latest
     docker run -d \
       --name web-server \
-      -e TOPIC_ARN=${aws_sns_topic.video_scaler_topic.arn} \
       -e AWS_REGION=${var.aws_region} \
+      -e TOPIC_ARN=${aws_sns_topic.video_scaler_topic.arn} \
+      -e S3_BUCKET_NAME=${aws_s3_bucket.video_scaler_bucket.bucket} \
       -p 8080:80 \
       --restart unless-stopped \
       phulam11031996/web-server:latest

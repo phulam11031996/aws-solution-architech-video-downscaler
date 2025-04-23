@@ -4,18 +4,23 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy package.json and package-lock.json first (to leverage Docker cache)
 COPY package.json package-lock.json ./
-RUN npm install  # Install dependencies
 
-# Copy the rest of the app files
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
-# Add environment variable support
+# Build TypeScript code
+RUN npm run build
+
+# Set environment variables
 ENV PORT=80
 
-# Expose port 80
+# Expose port
 EXPOSE 80
 
-# Run the app
+# Run the compiled JS file (assumes dist/server.js exists)
 CMD ["node", "server.js"]

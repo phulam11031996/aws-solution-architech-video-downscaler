@@ -8,6 +8,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "start": "node server.js"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/node": "^22.14.1",
     "aws-sdk": "^2.1692.0",
     "cors": "^2.8.5",
     "express": "^4.21.2"

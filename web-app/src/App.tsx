@@ -30,7 +30,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('api', {
+      const response = await fetch('downscale-videos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
