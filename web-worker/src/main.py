@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from presigned_url_handler import PresignedURLHandler
 from sqs_manager import SQSManager
+from video_downscaler import VideoDownscaler
 
 load_dotenv()
 
@@ -21,6 +22,7 @@ async def main():
     else:
         raise ValueError(f"Unknown target based on queue URL: {SQS_QUEUE_URL}")
 
+    downscaler = VideoDownscaler(target_key=target_key)
     sqs_manager = SQSManager(region=AWS_REGION, queue_url=SQS_QUEUE_URL)
     handler = PresignedURLHandler(queue_url=SQS_QUEUE_URL, target_key=target_key)
 
@@ -34,10 +36,13 @@ async def main():
                 body = json.loads(message["Body"])
 
                 # Poll for data from the SQS queue
-                video_data = await handler.poll_for_original_video_data(body)
+                original_video_data = await handler.poll_for_original_video_data(body)
 
-                # Upload the data to the presigned URL
-                await handler.upload_to_put_presigned_url(video_data)
+                # Downscale the video
+                downscaled_video_data = downscaler.downscale(original_video_data)
+
+                # Upload the downscaled video
+                await handler.upload_to_put_presigned_url(downscaled_video_data)
 
             except Exception as e:
                 print(f"Error processing message: {e}")
