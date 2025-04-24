@@ -61,8 +61,10 @@ function App() {
   const [isFileSelected, setIsFileSelected] = useState(false);
   const [rowData, setRowData] = useState<RowDataItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSampleUploading, setIsSampleUploading] = useState(false);
 
   const uploadSampleVideo = async (url: string, fileName: string) => {
+    setIsSampleUploading(true);
     try {
       const response = await fetch(url);
       const blob = await response.blob();
@@ -84,7 +86,7 @@ function App() {
     } catch (err) {
       console.error('Error preparing sample video:', err);
     } finally {
-      setIsUploading(false);
+      setIsSampleUploading(false);
     }
   };
 
@@ -386,21 +388,21 @@ function App() {
             <Button
               variant="outline"
               onClick={() => uploadSampleVideo(sample1, 'sample-video-1.mp4')}
-              disabled={isUploading}
+              disabled={isSampleUploading}
             >
               Sample 1
             </Button>
             <Button
               variant="outline"
               onClick={() => uploadSampleVideo(sample2, 'sample-video-2.mp4')}
-              disabled={isUploading}
+              disabled={isSampleUploading}
             >
               Sample 2
             </Button>
             <Button
               variant="outline"
               onClick={() => uploadSampleVideo(sample3, 'sample-video-3.mp4')}
-              disabled={isUploading}
+              disabled={isSampleUploading}
             >
               Sample 3
             </Button>
