@@ -24,7 +24,6 @@ import sample1 from '@/assets/sample-videos/sample-video-1.mp4';
 import sample2 from '@/assets/sample-videos/sample-video-2.mp4';
 import sample3 from '@/assets/sample-videos/sample-video-3.mp4';
 
-
 import { useRef, useState, useEffect } from 'react';
 import { getPresignedUrls, uploadToS3 } from '@/services/api';
 
@@ -63,33 +62,31 @@ function App() {
   const [rowData, setRowData] = useState<RowDataItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
-const uploadSampleVideo = async (url: string, fileName: string) => {
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const file = new File([blob], fileName, { type: blob.type });
+  const uploadSampleVideo = async (url: string, fileName: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const file = new File([blob], fileName, { type: blob.type });
 
-    // Create a DataTransfer to simulate file input
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
+      // Create a DataTransfer to simulate file input
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
 
-    if (fileInputRef.current) {
-      fileInputRef.current.files = dataTransfer.files;
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
 
-      // Trigger onChange manually if needed
-      const event = new Event('change', { bubbles: true });
-      fileInputRef.current.dispatchEvent(event);
+        // Trigger onChange manually if needed
+        const event = new Event('change', { bubbles: true });
+        fileInputRef.current.dispatchEvent(event);
+      }
+
+      setIsFileSelected(true); // Optional, in case you want to manually update state
+    } catch (err) {
+      console.error('Error preparing sample video:', err);
+    } finally {
+      setIsUploading(false);
     }
-
-    setIsFileSelected(true); // Optional, in case you want to manually update state
-  } catch (err) {
-    console.error('Error preparing sample video:', err);
-  } finally {
-    setIsUploading(false);
-  }
-};
-
-
+  };
 
   // Function to format bytes to human-readable size
   const formatFileSize = (bytes: number): string => {
@@ -130,13 +127,13 @@ const uploadSampleVideo = async (url: string, fileName: string) => {
           prevData.map((item) =>
             item.id === rowId
               ? {
-                ...item,
-                [scaleType]: {
-                  ...item[scaleType],
-                  status: 'ready',
-                  fileSize: fileSize,
-                },
-              }
+                  ...item,
+                  [scaleType]: {
+                    ...item[scaleType],
+                    status: 'ready',
+                    fileSize: fileSize,
+                  },
+                }
               : item,
           ),
         );
@@ -249,12 +246,12 @@ const uploadSampleVideo = async (url: string, fileName: string) => {
         prevData.map((item) =>
           item.id === row.id
             ? {
-              ...item,
-              [scaleType]: {
-                ...item[scaleType],
-                status: 'downloading',
-              },
-            }
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'downloading',
+                },
+              }
             : item,
         ),
       );
@@ -288,12 +285,12 @@ const uploadSampleVideo = async (url: string, fileName: string) => {
         prevData.map((item) =>
           item.id === row.id
             ? {
-              ...item,
-              [scaleType]: {
-                ...item[scaleType],
-                status: 'downloaded',
-              },
-            }
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'downloaded',
+                },
+              }
             : item,
         ),
       );
@@ -306,12 +303,12 @@ const uploadSampleVideo = async (url: string, fileName: string) => {
         prevData.map((item) =>
           item.id === row.id
             ? {
-              ...item,
-              [scaleType]: {
-                ...item[scaleType],
-                status: 'ready',
-              },
-            }
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'ready',
+                },
+              }
             : item,
         ),
       );
@@ -425,9 +422,11 @@ const uploadSampleVideo = async (url: string, fileName: string) => {
             )}
           </Button>
         </CardFooter>
-        <CardFooter className="flex justify-between">
-          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-        </CardFooter>
+        {error && (
+          <CardFooter className="flex justify-between">
+            {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+          </CardFooter>
+        )}
       </Card>
 
       <Table>
