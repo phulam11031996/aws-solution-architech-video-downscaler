@@ -81,6 +81,9 @@ function App() {
         const event = new Event('change', { bubbles: true });
         fileInputRef.current.dispatchEvent(event);
       }
+      const sleep = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+      await sleep(5000);
 
       setIsFileSelected(true); // Optional, in case you want to manually update state
     } catch (err) {
@@ -412,7 +415,7 @@ function App() {
         <CardFooter className="flex justify-between">
           <Button
             onClick={uploadVideo}
-            disabled={!isFileSelected || isUploading}
+            disabled={!isFileSelected || isUploading || isSampleUploading}
           >
             {isUploading ? (
               <>
