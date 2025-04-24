@@ -1,7 +1,5 @@
-import os
 import subprocess
 import uuid
-from tempfile import gettempdir
 
 
 class VideoDownscaler:
@@ -14,24 +12,13 @@ class VideoDownscaler:
         elif "downScaleX3" in target_key:
             scale = 0.125
         self.scale = scale
-        self.temp_dir = gettempdir()
 
     def downscale(self, input_video_bytes: bytes) -> bytes:
-        unique_id = uuid.uuid4().hex
-        input_path = os.path.join(self.temp_dir, f"input-{unique_id}.mp4")
-        output_path = os.path.join(
-            self.temp_dir, f"output-{self.scale}-{unique_id}.mp4"
-        )
-
-        # Write input video to a temp file
-        with open(input_path, "wb") as f:
-            f.write(input_video_bytes)
-
         scale_filter = f"scale=iw*{self.scale}:ih*{self.scale}"
         cmd = [
             "ffmpeg",
             "-i",
-            input_path,
+            "pipe:0",  # Read from stdin
             "-vf",
             scale_filter,
             "-c:v",
@@ -40,21 +27,27 @@ class VideoDownscaler:
             "28",
             "-preset",
             "ultrafast",
-            "-y",  # Overwrite without asking
-            output_path,
+            "-f",
+            "matroska",  # Use MKV format instead of MP4
+            "pipe:1",  # Write to stdout
         ]
 
         print(f"Downscaling video with FFmpeg to {self.scale * 100:.0f}% size...")
-        subprocess.run(cmd, check=True)
 
-        # Read the downscaled video
-        with open(output_path, "rb") as f:
-            output_bytes = f.read()
+        # Run ffmpeg with pipe communication
+        process = subprocess.Popen(
+            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+
+        # Send input data and get output
+        output_bytes, stderr = process.communicate(input=input_video_bytes)
+
+        # Check if the process was successful
+        if process.returncode != 0:
+            error_message = stderr.decode("utf-8", errors="replace")
+            raise RuntimeError(
+                f"FFmpeg error (code {process.returncode}): {error_message}"
+            )
 
         print(f"Downscaled video size: {len(output_bytes)} bytes")
-
-        # Clean up (optional - you can keep files for debugging)
-        os.remove(input_path)
-        os.remove(output_path)
-
         return output_bytes
