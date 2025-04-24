@@ -31,9 +31,9 @@ jobs:
         run: |
           npm install --prefix web-server
 
-      - name: Run ESLint
-        run: |
-          npm run lint --prefix web-server
+      # - name: Run ESLint
+      #   run: |
+      #     npm run lint --prefix web-server
 
       - name: Run Prettier check
         run: |

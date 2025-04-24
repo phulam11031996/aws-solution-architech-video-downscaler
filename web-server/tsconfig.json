@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
     "esModuleInterop": true,
-    "module": "CommonJS",
-    "target": "ES2019"
-  }
+    "skipLibCheck": true
+  },
+  "include": ["src"]
 }
