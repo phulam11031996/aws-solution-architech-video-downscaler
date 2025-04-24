@@ -1,5 +1,4 @@
 import subprocess
-import uuid
 
 
 class VideoDownscaler:
@@ -17,32 +16,34 @@ class VideoDownscaler:
         scale_filter = f"scale=iw*{self.scale}:ih*{self.scale}"
         cmd = [
             "ffmpeg",
+            "-y",
+            "-loglevel",
+            "error",
             "-i",
-            "pipe:0",  # Read from stdin
+            "pipe:0",
             "-vf",
             scale_filter,
             "-c:v",
             "libx264",
-            "-crf",
-            "28",
             "-preset",
             "ultrafast",
+            "-crf",
+            "28",
             "-f",
-            "matroska",  # Use MKV format instead of MP4
-            "pipe:1",  # Write to stdout
+            "mp4",
+            "-movflags",
+            "frag_keyframe+empty_moov",
+            "pipe:1",
         ]
 
         print(f"Downscaling video with FFmpeg to {self.scale * 100:.0f}% size...")
 
-        # Run ffmpeg with pipe communication
         process = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
-        # Send input data and get output
         output_bytes, stderr = process.communicate(input=input_video_bytes)
 
-        # Check if the process was successful
         if process.returncode != 0:
             error_message = stderr.decode("utf-8", errors="replace")
             raise RuntimeError(
