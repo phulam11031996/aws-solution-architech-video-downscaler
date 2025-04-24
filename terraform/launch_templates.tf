@@ -34,7 +34,7 @@ resource "aws_launch_template" "web_app_lt" {
       --name web-app \
       -p 80:80 \
       --restart unless-stopped \
-      -e ALB_DNS=${aws_lb.web_app_alb.dns_name} \
+      -e ALB_DNS=${aws_lb.web_server_alb.dns_name} \
       phulam11031996/web-app:latest
   EOF
   )
@@ -90,5 +90,98 @@ resource "aws_launch_template" "web_server_lt" {
       Name = "Web-Server-ASG"
     }
   }
+}
+
+resource "aws_launch_template" "video_downscaler_x1" {
+  name_prefix   = "video-downscaler-x1-"
+  image_id      = data.aws_ami.latest_amazon_linux.id
+  instance_type = "t2.micro"
+  key_name      = var.key_name
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ssm_s3_read_sqs_profile.name
+  }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    sudo yum update -y
+    sudo amazon-linux-extras enable docker
+    sudo yum install -y docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker ec2-user
+
+    docker pull phulam11031996/web-worker:latest
+
+    docker run -d \
+      --name web-worker \
+      -e SQS_QUEUE_URL=${aws_sqs_queue.video_x1_queue.url} \
+      -e AWS_REGION=${var.aws_region} \
+      --restart unless-stopped \
+      phulam11031996/web-worker:latest
+  EOF
+  )
+}
+
+resource "aws_launch_template" "video_downscaler_x2" {
+  name_prefix   = "video-downscaler-x2-"
+  image_id      = data.aws_ami.latest_amazon_linux.id
+  instance_type = "t2.micro"
+  key_name      = var.key_name
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ssm_s3_read_sqs_profile.name
+  }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    sudo yum update -y
+    sudo amazon-linux-extras enable docker
+    sudo yum install -y docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker ec2-user
+
+    docker pull phulam11031996/web-worker:latest
+
+    docker run -d \
+      --name web-worker \
+      -e SQS_QUEUE_URL=${aws_sqs_queue.video_x2_queue.url} \
+      -e AWS_REGION=${var.aws_region} \
+      --restart unless-stopped \
+      phulam11031996/web-worker:latest
+  EOF
+  )
+}
+
+resource "aws_launch_template" "video_downscaler_x3" {
+  name_prefix   = "video-downscaler-x3-"
+  image_id      = data.aws_ami.latest_amazon_linux.id
+  instance_type = "t2.micro"
+  key_name      = var.key_name
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ssm_s3_read_sqs_profile.name
+  }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    sudo yum update -y
+    sudo amazon-linux-extras enable docker
+    sudo yum install -y docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -aG docker ec2-user
+
+    docker pull phulam11031996/web-worker:latest
+
+    docker run -d \
+      --name web-worker \
+      -e SQS_QUEUE_URL=${aws_sqs_queue.video_x3_queue.url} \
+      -e AWS_REGION=${var.aws_region} \
+      --restart unless-stopped \
+      phulam11031996/web-worker:latest
+  EOF
+  )
 }
 
