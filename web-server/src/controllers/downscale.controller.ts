@@ -7,7 +7,9 @@ import {
   DownscaleRequestData,
   DownscaleRequestQuery,
   DownscaleResponsePayload,
+  ErrorResponse
 } from '../types/downscale.types';
+
 
 export const handleDownscale = async (
   req: Request<
@@ -15,7 +17,7 @@ export const handleDownscale = async (
     DownscaleRequestQuery,
     DownscaleRequestBody
   >,
-  res: Response<DownscaleResponsePayload>
+  res: Response<DownscaleResponsePayload | ErrorResponse>
 ) => {
   const contentType = req.body.fileType;
 

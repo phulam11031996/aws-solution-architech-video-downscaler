@@ -18,3 +18,5 @@ export type DownscaleRequestBody = {
 export type DownscaleRequestData = {};
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 export type DownscaleRequestQuery = {};
+
+export type ErrorResponse = { error: string };
