@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Download, Loader2, Check } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -10,55 +10,184 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useRef, useState } from 'react';
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
+import { useRef, useState, useEffect } from 'react';
+import { getPresignedUrls, uploadToS3 } from '@/services/api';
+
+// Define download status types
+type DownloadStatus = 'idle' | 'loading' | 'ready' | 'downloaded';
+
+// Define row data type with status tracking and file size
+interface RowDataItem {
+  id: number;
+  fileName: string;
+  originalFileSize: string;
+  downScaleX1: {
+    putPresignedUrl: string;
+    getPresignedUrl: string;
+    status: DownloadStatus;
+    fileSize?: string;
+  };
+  downScaleX2: {
+    putPresignedUrl: string;
+    getPresignedUrl: string;
+    status: DownloadStatus;
+    fileSize?: string;
+  };
+  downScaleX3: {
+    putPresignedUrl: string;
+    getPresignedUrl: string;
+    status: DownloadStatus;
+    fileSize?: string;
+  };
+}
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isFileSelected, setIsFileSelected] = useState(false);
+  const [rowData, setRowData] = useState<RowDataItem[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Function to format bytes to human-readable size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // Function to poll for video processing status
+  const pollForProcessingStatus = async (
+    rowId: number,
+    scaleType: 'downScaleX1' | 'downScaleX2' | 'downScaleX3',
+  ) => {
+    const row = rowData.find((r) => r.id === rowId);
+    if (!row) return;
+
+    try {
+      // Poll the getPresignedUrl to check if the processed video is ready
+      const response = await fetch(row[scaleType].getPresignedUrl, {
+        method: 'GET', // Using HEAD to get headers without downloading the content
+      });
+
+      if (response.ok) {
+        // Get content length from headers to determine file size
+        const contentLength = response.headers.get('content-length');
+        let fileSize = 'Unknown';
+
+        if (contentLength) {
+          fileSize = formatFileSize(parseInt(contentLength, 10));
+        }
+
+        // Video is ready, update the status and file size
+        setRowData((prevData) =>
+          prevData.map((item) =>
+            item.id === rowId
+              ? {
+                  ...item,
+                  [scaleType]: {
+                    ...item[scaleType],
+                    status: 'ready',
+                    fileSize: fileSize,
+                  },
+                }
+              : item,
+          ),
+        );
+        return true;
+      } else {
+        // Continue polling
+        return false;
+      }
+    } catch {
+      // Continue polling if there's an error (resource might not be available yet)
+      return false;
+    }
+  };
+
+  // Setup polling at regular intervals for each "loading" status
+  useEffect(() => {
+    const pollingIntervals: NodeJS.Timeout[] = [];
+
+    rowData.forEach((row) => {
+      ['downScaleX1', 'downScaleX2', 'downScaleX3'].forEach((scaleType) => {
+        const scale = scaleType as
+          | 'downScaleX1'
+          | 'downScaleX2'
+          | 'downScaleX3';
+
+        if (row[scale].status === 'loading') {
+          const interval = setInterval(async () => {
+            const isReady = await pollForProcessingStatus(row.id, scale);
+            if (isReady) {
+              clearInterval(interval);
+            }
+          }, 5000); // Poll every 5 seconds
+
+          pollingIntervals.push(interval);
+        }
+      });
+    });
+
+    // Clean up intervals on unmount or when rowData changes
+    return () => {
+      pollingIntervals.forEach((interval) => clearInterval(interval));
+    };
+  }, [rowData]);
 
   const uploadVideo = async () => {
-    setLoading(true);
     setError(null);
+    setIsUploading(true);
 
     const file = fileInputRef.current?.files?.[0];
 
     if (!file) {
       setError('Please select a video file to upload.');
-      setLoading(false);
+      setIsUploading(false);
       return;
     }
 
     try {
-      const response = await fetch('downscale-videos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const data = await getPresignedUrls(file.type); // Get the presigned URLs from the service
+
+      // Upload the original file to S3
+      await uploadToS3(data.downScaleX0.putPresignedUrl, file);
+
+      const newEntry: RowDataItem = {
+        id: rowData.length + 1,
+        fileName: file.name,
+        originalFileSize: formatFileSize(file.size),
+        downScaleX1: {
+          ...data.downScaleX1,
+          status: 'loading',
         },
-        body: JSON.stringify({
-          fileType: file.type,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to get presigned URLs');
-      }
-
-      const data = await response.json();
-      const { putPresignedUrl, fileName } = data.downScaleX0;
-
-      const uploadResponse = await fetch(putPresignedUrl, {
-        headers: {
-          'Content-Type': file.type,
+        downScaleX2: {
+          ...data.downScaleX2,
+          status: 'loading',
         },
-        method: 'PUT',
-        body: file,
-      });
+        downScaleX3: {
+          ...data.downScaleX3,
+          status: 'loading',
+        },
+      };
 
-      if (!uploadResponse.ok) {
-        throw new Error('Failed to upload video to S3');
-      }
+      setRowData((prev) => [...prev, newEntry]);
 
-      console.log('Video uploaded to S3 successfully', fileName);
+      console.log('Video uploaded to S3 successfully');
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error('Error uploading video:', err);
@@ -68,12 +197,136 @@ function App() {
         setError('Something went wrong');
       }
     } finally {
-      setLoading(false);
+      // Reset the file input after upload
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      setIsFileSelected(false);
+      setIsUploading(false);
+    }
+  };
+
+  // Function to handle download using fetch
+  const handleDownload = async (
+    row: RowDataItem,
+    scaleType: 'downScaleX1' | 'downScaleX2' | 'downScaleX3',
+  ) => {
+    try {
+      // Set status to downloading
+      setRowData((prevData) =>
+        prevData.map((item) =>
+          item.id === row.id
+            ? {
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'downloading',
+                },
+              }
+            : item,
+        ),
+      );
+
+      // Fetch the file
+      const response = await fetch(row[scaleType].getPresignedUrl);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Get the blob from the response
+      const blob = await response.blob();
+
+      // Create an object URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a download link and trigger it
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${row.fileName.split('.')[0]}.${row.fileName.split('.').pop()}`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      // Update status to downloaded
+      setRowData((prevData) =>
+        prevData.map((item) =>
+          item.id === row.id
+            ? {
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'downloaded',
+                },
+              }
+            : item,
+        ),
+      );
+    } catch (error) {
+      console.error('Download error:', error);
+      setError('Failed to download the video');
+
+      // Reset status to ready on error
+      setRowData((prevData) =>
+        prevData.map((item) =>
+          item.id === row.id
+            ? {
+                ...item,
+                [scaleType]: {
+                  ...item[scaleType],
+                  status: 'ready',
+                },
+              }
+            : item,
+        ),
+      );
+    }
+  };
+
+  // Render button based on status
+  const renderButton = (
+    row: RowDataItem,
+    scaleType: 'downScaleX1' | 'downScaleX2' | 'downScaleX3',
+  ) => {
+    const status = row[scaleType].status;
+    const fileSize = row[scaleType].fileSize;
+
+    switch (status) {
+      case 'loading':
+        return (
+          <Button disabled>
+            <Loader2 className="animate-spin" />
+            Processing
+          </Button>
+        );
+      case 'ready':
+        return (
+          <Button onClick={() => handleDownload(row, scaleType)}>
+            <Download />
+            {fileSize}
+          </Button>
+        );
+      case 'downloaded':
+        return (
+          <Button variant="outline" className="text-green-500" disabled>
+            <Check />
+            {fileSize}
+          </Button>
+        );
+      default:
+        return (
+          <Button disabled>
+            <Download />
+          </Button>
+        );
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+    <div className="min-h-screen flex flex-col items-start justify-start gap-4 p-4">
       <Card className="w-[350px] bg-white text-black">
         <CardHeader>
           <CardTitle>Upload Video</CardTitle>
@@ -91,21 +344,26 @@ function App() {
                   id="video"
                   type="file"
                   accept="video/*"
+                  onChange={() => {
+                    setIsFileSelected(!!fileInputRef.current?.files?.length);
+                  }}
                 />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
-          <Button onClick={uploadVideo} disabled={loading}>
-            {loading ? (
+          <Button
+            onClick={uploadVideo}
+            disabled={!isFileSelected || isUploading}
+          >
+            {isUploading ? (
               <>
-                <Loader2 className="animate-spin mr-2" />
-                Please wait
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
               </>
             ) : (
-              'Upload Video'
+              'Upload'
             )}
           </Button>
         </CardFooter>
@@ -113,6 +371,32 @@ function App() {
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
         </CardFooter>
       </Card>
+
+      <Table>
+        <TableCaption>A list of your downscale videos.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead>File Name</TableHead>
+            <TableHead>Original File Size</TableHead>
+            <TableHead>Downscale x1</TableHead>
+            <TableHead>Downscale x2</TableHead>
+            <TableHead>Downscale x3</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rowData.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell className="font-medium">{row.id}</TableCell>
+              <TableCell>{row.fileName}</TableCell>
+              <TableCell>{row.originalFileSize}</TableCell>
+              <TableCell>{renderButton(row, 'downScaleX1')}</TableCell>
+              <TableCell>{renderButton(row, 'downScaleX2')}</TableCell>
+              <TableCell>{renderButton(row, 'downScaleX3')}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
