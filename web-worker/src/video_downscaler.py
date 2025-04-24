@@ -23,42 +23,37 @@ class VideoDownscaler:
             self.temp_dir, f"output-{self.scale}-{unique_id}.mp4"
         )
 
+        # Write input video to a temp file
         with open(input_path, "wb") as f:
             f.write(input_video_bytes)
 
         scale_filter = f"scale=iw*{self.scale}:ih*{self.scale}"
         cmd = [
             "ffmpeg",
-            "-hwaccel",
-            "cuda",  # Try GPU decoding if available
             "-i",
             input_path,
             "-vf",
             scale_filter,
             "-c:v",
-            "h264_nvenc",  # GPU encoder
+            "libx264",
+            "-crf",
+            "28",
             "-preset",
-            "fast",  # Speed preset (ultrafast can be buggy)
-            "-rc",
-            "vbr",  # Variable Bit Rate
-            "-cq",
-            "28",  # Constant quality (like CRF)
-            "-c:a",
-            "copy",  # Skip re-encoding audio
-            "-y",
+            "ultrafast",
+            "-y",  # Overwrite without asking
             output_path,
         ]
 
-        print(
-            f"Downscaling video quickly using GPU and FFmpeg to {self.scale * 100:.0f}% size..."
-        )
+        print(f"Downscaling video with FFmpeg to {self.scale * 100:.0f}% size...")
         subprocess.run(cmd, check=True)
 
+        # Read the downscaled video
         with open(output_path, "rb") as f:
             output_bytes = f.read()
 
         print(f"Downscaled video size: {len(output_bytes)} bytes")
 
+        # Clean up (optional - you can keep files for debugging)
         os.remove(input_path)
         os.remove(output_path)
 
