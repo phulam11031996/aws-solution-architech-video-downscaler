@@ -114,7 +114,7 @@ cp /path/to/your-key.pem terraform/key.pem
 ```
 ### 3. Initialize Terraform
 
-Navigate to the root directory and run:
+Navigate to the repo `root` directory and run:
 
 ```bash
 make tf-init
