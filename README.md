@@ -46,7 +46,7 @@
   <li>🖥️ <b>Bash</b> – For server setup and automation tasks</li>
 </ul>
 
-<h style="text-align: center; font-weight: bold;">🗺️ Architecture Diagram</h2>
+<h2 style="text-align: center; font-weight: bold;">🗺️ Architecture Diagram</h2>
 <div align="center">
   <img src="https://github.com/user-attachments/assets/54d0d2c1-47bb-42b4-b957-0b73b009e953" width="90%" />
 </div>
@@ -73,8 +73,6 @@
 
 - **Terraform**: Ensure Terraform is installed on your system. You can download it from the [Terraform official website](https://www.terraform.io/downloads).
 - **Private Key File**: You will need a private key file (`key.pem`) to access EC2 instances.
-
----
 
 ## Steps to Run the Project
 
