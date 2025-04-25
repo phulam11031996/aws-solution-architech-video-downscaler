@@ -90,6 +90,45 @@
 
 
 <h2>▶️ How to Run the Project</h2>
+## Prerequisites
+
+- **Terraform**: Ensure Terraform is installed on your system. You can download it from the [Terraform official website](https://www.terraform.io/downloads).
+- **Private Key File**: You will need a private key file (`key.pem`) to access EC2 instances.
+
+---
+
+## Steps to Run the Project
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd aws-solution-architech-video-downscaler
+```
+### 2. Place the Key File
+
+Copy your private key file into the `terraform/` directory and ensure it is named `key.pem`.
+
+```bash
+cp /path/to/your-key.pem terraform/key.pem
+```
+### 3. Initialize Terraform
+
+Navigate to the root directory and run:
+
+```bash
+make tf-init
+```
+### 4. Apply Terraform Configuration
+```bash
+make tf-apply
+```
+### 5. Access the Application
+
+Once the deployment is complete:
+
+1. Retrieve the public DNS of the Application Load Balancer (ALB) from the Terraform output.
+2. Open your browser and visit:
 
 <h2>🔮 Future Improvements</h2>
 <h3>Speed Improvements</h3>
