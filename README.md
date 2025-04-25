@@ -105,9 +105,9 @@
 git clone https://github.com/phulam11031996/aws-solution-architech-video-downscaler.git
 cd aws-solution-architech-video-downscaler
 ```
-### 2. Place the Key File
+### 2. Generate and Place the Key File
 
-Copy your private key file into the `terraform/` directory and ensure it is named `key.pem`.
+Use AWS Management Console or AWS CLI to generate `key.pem` and copy your private key file into the `terraform/` directory and ensure it is named `key.pem`.
 
 ```bash
 cp /path/to/your-key.pem terraform/key.pem
