@@ -84,10 +84,10 @@ cd aws-solution-architech-video-downscaler
 ```
 ### 2. Generate and Place the Key File
 
-Use AWS Management Console or AWS CLI to generate `key.pem` and copy your private key file into the `terraform/` directory and ensure it is named `key.pem`.
+Use AWS Management Console or AWS CLI to generate `test-key-pair.pem` and copy your private key file into the `terraform/` directory and ensure it is named `test-key-pair.pem`.
 
 ```bash
-cp /path/to/your-key.pem terraform/key.pem
+cp /path/to/your-key.pem terraform/test-key-pair.pem
 ```
 ### 3. Initialize Terraform
 
