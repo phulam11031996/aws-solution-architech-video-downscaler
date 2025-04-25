@@ -102,7 +102,7 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/phulam11031996/aws-solution-architech-video-downscaler.git
 cd aws-solution-architech-video-downscaler
 ```
 ### 2. Place the Key File
