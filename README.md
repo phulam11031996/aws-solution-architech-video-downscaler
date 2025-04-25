@@ -3,17 +3,16 @@
 </h1>
 
 <h2 style="text-align: center; font-weight: bold;">📌 Overview</h2>
-<p>The application processes and downscales videos uploaded to an S3 bucket, ensuring efficient storage and seamless delivery for end users. This project showcases my expertise in designing a <b>highly available (HA)</b>, <b>fault-tolerant (FT)</b>, and <b>disaster-resilient (DR)</b> solution using <b>AWS services</b>.
+<p>This application allows users to upload a video, and in return, the web app provides three downscaled versions of the video for the user to download. This project showcases my expertise in designing a <b>highly available (HA)</b>, <b>fault-tolerant (FT)</b>, and <b>disaster-resilient (DR)</b> solution using <b>AWS services</b>.
 
 <h2 style="text-align: center; font-weight: bold;">🚀 Key Features</h2>
 <ul>
-  <li><b>CI/CD Pipeline:</b> Implemented GitHub Actions for automated testing and deployment.</li>
-  <li><b>Infrastructure as Code (IaC):</b> Used Terraform to provision and manage AWS resources.</li>
-  <li><b>Scalable Architecture:</b> Utilized AWS Auto Scaling Groups (ASG) to dynamically manage EC2 instances based on workload.</li>
-  <li><b>Serverless Integration:</b> Used <b>AWS SNS</b> and <b>AWS SQS</b> for a <b>pub/sub pattern</b> to decouple services and enable asynchronous communication.</li>
-  <li><b>Application Load Balancer (ALB):</b> Configured ALB to distribute traffic across EC2 instances.</li>
-  <li><b>Containerization:</b> Dockerized the video processing application for portability and consistency.</li>
+  <li><b>Scalable Architecture:</b> Utilized AWS Auto Scaling Groups (ASG) to automatically scale EC2 instances up and down based on workload, ensuring cost efficiency and optimal performance.</li>
+  <li><b>Regional Resilience:</b> Spread the web tier across multiple availability zones, ensuring high availability and fault tolerance for the application.</li>
+  <li><b>Serverless Integration:</b> Used AWS SNS and AWS SQS for a pub/sub pattern to decouple services and enable asynchronous communication, enhancing scalability and flexibility.</li>
+  <li><b>Application Load Balancer (ALB):</b> Configured ALB to distribute traffic evenly across EC2 instances, improving load distribution and application performance.</li>
 </ul>
+
 
 <h2 style="text-align: center; font-weight: bold;">🛠️ Technologies Used</h2>
 <h3>Infrastructure as Code</h3>
