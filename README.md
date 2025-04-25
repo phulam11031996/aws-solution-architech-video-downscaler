@@ -118,17 +118,14 @@ Navigate to the root directory and run:
 
 ```bash
 make tf-init
-```
-### 4. Apply Terraform Configuration
-```bash
 make tf-apply
 ```
-### 5. Access the Application
+### 4. Access the Application
 
 Once the deployment is complete:
 
 1. Retrieve the public DNS of the Application Load Balancer (ALB) from the Terraform output.
-2. Open your browser and visit:
+2. Open the web application in your browser using the ALB DNS.
 
 <h2>🔮 Future Improvements</h2>
 <h3>Speed Improvements</h3>
