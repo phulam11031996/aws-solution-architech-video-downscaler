@@ -67,28 +67,6 @@
   <li><strong>S3 Lifecycle Management:</strong> A lifecycle policy automatically moves older videos into S3 Deep Archive storage to reduce storage costs.</li>
 </ol>
 
-<h2>🐞 Challenges and Solutions</h2>
-<h3>Challenge 1: Passing Environment Variables</h3>
-<p><strong>Issue:</strong> Passing environment variables from the EC2 instance to the application running inside a Docker container was complex and required careful configuration.</p>
-<p><strong>Solution:</strong> Used Docker's <code>--env-file</code> option to pass environment variables from the EC2 instance to the container. Sensitive variables were securely stored in AWS Systems Manager Parameter Store and fetched dynamically at startup.</p>
-
-<h3>Challenge 2: Internal Application Load Balancer (ALB) Name Resolution</h3>
-<p><strong>Issue:</strong> Retrieving the internal ALB's DNS name and passing it to the web application was time-consuming and error-prone.</p>
-<p><strong>Solution:</strong> Automated retrieval of the ALB DNS name using Terraform outputs and passed it as an environment variable during deployment.</p>
-
-<h3>Challenge 3: Internal ALB Communication with React App</h3>
-<p><strong>Issue:</strong> The internal ALB could not be directly accessed from the React front-end due to browser security restrictions.</p>
-<p><strong>Solution:</strong> Configured an NGINX reverse proxy to forward requests from the React app to the internal ALB, enabling seamless front-end to back-end communication.</p>
-
-<h3>Challenge 4: Least Privilege Communication Between Web Tiers</h3>
-<p><strong>Issue:</strong> Enforcing least privilege between web tiers required careful IAM, security group, and policy configuration.</p>
-<p><strong>Solution:</strong> Designed minimal-permission IAM roles and security groups. Used AWS IAM Policy Simulator to test and validate access rules.</p>
-
-<h3>Challenge 5: Debugging and SSH Access</h3>
-<p><strong>Issue:</strong> Debugging on EC2 instances was difficult due to restricted SSH access for security.</p>
-<p><strong>Solution:</strong> Used AWS Systems Manager Session Manager for secure, auditable instance access. Bash scripts were used for debugging and troubleshooting.</p>
-
-
 <h2>▶️ How to Run the Project</h2>
 ## Prerequisites
 
@@ -140,3 +118,11 @@ Once the deployment is complete:
   These enhancements were skipped to keep the project focused on demonstrating scalable and cost-effective cloud architecture; Doing these speed improvements will incurring additional costs.
 </p>
 
+<h2>🐞 Challenges and Solutions</h2>
+<h3>Challenge 1: Passing Environment Variables</h3>
+<p><strong>Issue:</strong> Passing environment variables from the EC2 instance to the application running inside a Docker container was complex and required careful configuration.</p>
+
+<h3>Challenge 2: Least Privilege Communication Between Web Tiers</h3>
+<p><strong>Issue:</strong> Enforcing least privilege between web tiers required careful IAM, security group, and policy configuration. So, a lot of timeouts and 400s errors while calling the ALB.</p>
+
+<p><strong>Solution:</strong> Used AWS Systems Manager Session Manager for secure, auditable instance access. Bash scripts were used for debugging and troubleshooting.</p>
