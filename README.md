@@ -26,6 +26,8 @@
 
 <h2>🗺️ Architecture Diagram</h2>
 
+![Three Tier Web Architecture](https://github.com/user-attachments/assets/2ba1e2d0-aab7-46b2-b7e0-160c04e26919)
+
 <h2>⚙️ How It Works</h2>
 
 <h2>🐞 Challenges and Solutions</h2>
