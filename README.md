@@ -25,12 +25,15 @@
 </ul>
 
 <h2>🗺️ Architecture Diagram</h2>
-
-![Three Tier Web Architecture](https://github.com/user-attachments/assets/2ba1e2d0-aab7-46b2-b7e0-160c04e26919)
-
-![SQS Lambda Pooling](https://github.com/user-attachments/assets/dc1badc5-220e-492c-84f9-7b3fa2119065)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/2ba1e2d0-aab7-46b2-b7e0-160c04e26919" width="90%" />
+</div>
 
 <h2>⚙️ How It Works</h2>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/dc1badc5-220e-492c-84f9-7b3fa2119065" width="90%" />
+</div>
+
 
 <h2>🐞 Challenges and Solutions</h2>
 
