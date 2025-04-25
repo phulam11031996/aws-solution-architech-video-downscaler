@@ -18,6 +18,13 @@
 
 
 <h2>🧠 Skills Demonstrated</h2>
+<ul>
+  <li><b>Cloud Architecture:</b> Designed a fault-tolerant, highly available, and disaster recovery system on AWS.</li>
+  <li><b>DevOps:</b> Automated infrastructure provisioning and deployment using Terraform and GitHub Actions.</li>
+  <li><b>Containerization:</b> Built and deployed Docker containers for consistent runtime environments.</li>
+  <li><b>Networking:</b> Configured VPC, subnets, and security groups for secure and efficient communication.</li>
+  <li><b>Cost Optimization:</b> Implemented S3 lifecycle policies and efficient resource scaling.</li>
+</ul>
 
 <h2>🛠️ Technologies Used</h2>
 
