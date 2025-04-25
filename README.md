@@ -23,14 +23,6 @@
   <li><b>Programming Language:</b> Python, TypeScript</li>
   <li><b>Containerization:</b> Docker</li>
 </ul>
-<ul>
-  <li><b>Cloud:</b> <img src="https://img.icons8.com/ios/50/000000/amazon-web-services.png" alt="AWS" style="width: 20px;"/> AWS (<img src="https://img.icons8.com/ios/50/000000/virtual-machine.png" alt="EC2" style="width: 20px;"/> EC2, <img src="https://img.icons8.com/ios/50/000000/amazon-s3.png" alt="S3" style="width: 20px;"/> S3, <img src="https://img.icons8.com/ios/50/000000/application.png" alt="ALB" style="width: 20px;"/> ALB, <img src="https://img.icons8.com/ios/50/000000/key.png" alt="IAM" style="width: 20px;"/> IAM Role, <img src="https://img.icons8.com/ios/50/000000/network.png" alt="VPC" style="width: 20px;"/> VPC, <img src="https://img.icons8.com/ios/50/000000/folder.png" alt="Subnet" style="width: 20px;"/> Subnet, <img src="https://img.icons8.com/ios/50/000000/aws.png" alt="Launch Template" style="width: 20px;"/> EC2 Launch Template, <img src="https://img.icons8.com/ios/50/000000/autoscaling.png" alt="Auto Scaling" style="width: 20px;"/> Auto Scaling Group, <img src="https://img.icons8.com/ios/50/000000/message.png" alt="SNS" style="width: 20px;"/> SNS, <img src="https://img.icons8.com/ios/50/000000/queue.png" alt="SQS" style="width: 20px;"/> SQS)</li>
-  <li><b>IaC:</b> <img src="https://img.icons8.com/ios/50/000000/terraform.png" alt="Terraform" style="width: 20px;"/> Terraform</li>
-  <li><b>CI/CD:</b> <img src="https://img.icons8.com/ios/50/000000/github.png" alt="GitHub Actions" style="width: 20px;"/> GitHub Actions</li>
-  <li><b>Programming Language:</b> <img src="https://img.icons8.com/ios/50/000000/python.png" alt="Python" style="width: 20px;"/> Python, <img src="https://img.icons8.com/ios/50/000000/typescript.png" alt="TypeScript" style="width: 20px;"/> TypeScript</li>
-  <li><b>Containerization:</b> <img src="https://img.icons8.com/ios/50/000000/docker.png" alt="Docker" style="width: 20px;"/> Docker</li>
-</ul>
-
 
 <h2>🗺️ Architecture Diagram</h2>
 
