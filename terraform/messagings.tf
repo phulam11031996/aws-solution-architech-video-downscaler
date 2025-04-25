@@ -58,6 +58,7 @@ resource "aws_sqs_queue_policy" "video_x1_queue_policy" {
   })
 }
 
+# 5. Allow SNS to publish to each SQS queue
 resource "aws_sqs_queue_policy" "video_x2_queue_policy" {
   queue_url = aws_sqs_queue.video_x2_queue.id
 
@@ -77,6 +78,7 @@ resource "aws_sqs_queue_policy" "video_x2_queue_policy" {
   })
 }
 
+# 6. Allow SNS to publish to each SQS queue
 resource "aws_sqs_queue_policy" "video_x3_queue_policy" {
   queue_url = aws_sqs_queue.video_x3_queue.id
 

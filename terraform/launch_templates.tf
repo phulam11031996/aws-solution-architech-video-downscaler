@@ -9,6 +9,7 @@ data "aws_ami" "latest_amazon_linux" {
   }
 }
 
+# Launch Template for Web App
 resource "aws_launch_template" "web_app_lt" {
   name_prefix   = "web-app-lt-"
   image_id      = data.aws_ami.latest_amazon_linux.id
@@ -50,6 +51,7 @@ resource "aws_launch_template" "web_app_lt" {
   }
 }
 
+# Launch Template for Web Server
 resource "aws_launch_template" "web_server_lt" {
   name_prefix   = "web-server-lt-"
   image_id      = data.aws_ami.latest_amazon_linux.id
@@ -92,6 +94,7 @@ resource "aws_launch_template" "web_server_lt" {
   }
 }
 
+# Launch Template for Video Downscaler X1
 resource "aws_launch_template" "video_downscaler_x1" {
   name_prefix   = "video-downscaler-x1-"
   image_id      = data.aws_ami.latest_amazon_linux.id
@@ -123,6 +126,7 @@ resource "aws_launch_template" "video_downscaler_x1" {
   )
 }
 
+# Launch Template for Video Downscaler X2
 resource "aws_launch_template" "video_downscaler_x2" {
   name_prefix   = "video-downscaler-x2-"
   image_id      = data.aws_ami.latest_amazon_linux.id
@@ -154,6 +158,7 @@ resource "aws_launch_template" "video_downscaler_x2" {
   )
 }
 
+# Launch Template for Video Downscaler X3
 resource "aws_launch_template" "video_downscaler_x3" {
   name_prefix   = "video-downscaler-x3-"
   image_id      = data.aws_ami.latest_amazon_linux.id

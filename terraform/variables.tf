@@ -15,19 +15,3 @@ variable "key_name" {
   type        = string
 }
 
-variable "vpc_cidr" {
-  description = "VPC CIDR block"
-  type        = string
-  default     = "10.0.0.0/16"
-}
-
-variable "dockerhub_image" {
-  description = "The name of the SSH key pair"
-  type        = string
-}
-
-variable "web_server_dockerhub_image" {
-  description = "Docker Hub image for the web server"
-  type        = string
-}
-

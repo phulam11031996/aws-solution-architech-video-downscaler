@@ -1,3 +1,4 @@
+# AWS Auto Scaling Groups for Web Application and Video Downscalers
 resource "aws_autoscaling_group" "web_app_asg" {
   name                      = "web-app-asg"
   desired_capacity          = 2
@@ -24,6 +25,7 @@ resource "aws_autoscaling_group" "web_app_asg" {
   }
 }
 
+# AWS Auto Scaling Groups for Web Server and Video Downscalers
 resource "aws_autoscaling_group" "web_server_asg" {
   name                      = "web-server-asg"
   desired_capacity          = 2
@@ -50,10 +52,11 @@ resource "aws_autoscaling_group" "web_server_asg" {
   }
 }
 
+# AWS Auto Scaling Groups for Video Downscalers
 resource "aws_autoscaling_group" "video_downscaler_x1_asg" {
   name                      = "video-downscaler-x1-asg"
   desired_capacity          = 2
-  max_size                  = 2
+  max_size                  = 10
   min_size                  = 2
   vpc_zone_identifier       = aws_subnet.private_video[*].id
   health_check_type         = "EC2"
@@ -78,7 +81,7 @@ resource "aws_autoscaling_group" "video_downscaler_x1_asg" {
 resource "aws_autoscaling_group" "video_downscaler_x2_asg" {
   name                      = "video-downscaler-x2-asg"
   desired_capacity          = 2
-  max_size                  = 2
+  max_size                  = 10
   min_size                  = 2
   vpc_zone_identifier       = aws_subnet.private_video[*].id
   health_check_type         = "EC2"
@@ -103,7 +106,7 @@ resource "aws_autoscaling_group" "video_downscaler_x2_asg" {
 resource "aws_autoscaling_group" "video_downscaler_x3_asg" {
   name                      = "video-downscaler-x3-asg"
   desired_capacity          = 2
-  max_size                  = 2
+  max_size                  = 10
   min_size                  = 2
   vpc_zone_identifier       = aws_subnet.private_video[*].id
   health_check_type         = "EC2"
@@ -123,5 +126,54 @@ resource "aws_autoscaling_group" "video_downscaler_x3_asg" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# AWS Auto Scaling Policies for Video Downscalers
+resource "aws_autoscaling_policy" "scale_out_x1" {
+  name                   = "scale-out-x1"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 60
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x1_asg.name
+}
+
+resource "aws_autoscaling_policy" "scale_in_x1" {
+  name                   = "scale-in-x1"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 120
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x1_asg.name
+}
+
+resource "aws_autoscaling_policy" "scale_out_x2" {
+  name                   = "scale-out-x2"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 60
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x2_asg.name
+}
+
+resource "aws_autoscaling_policy" "scale_in_x2" {
+  name                   = "scale-in-x2"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 120
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x2_asg.name
+}
+
+resource "aws_autoscaling_policy" "scale_out_x3" {
+  name                   = "scale-out-x3"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 60
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x3_asg.name
+}
+
+resource "aws_autoscaling_policy" "scale_in_x3" {
+  name                   = "scale-in-x3"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 120
+  autoscaling_group_name = aws_autoscaling_group.video_downscaler_x3_asg.name
 }
 
