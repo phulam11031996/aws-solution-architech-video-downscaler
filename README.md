@@ -3,7 +3,7 @@
 </h1>
 
 <h2>📌 Overview</h2>
-<p>The application processes and downscales videos uploaded to an S3 bucket, ensuring efficient storage and seamless delivery for end users. This project showcases my expertise in designing a <b>highly available (HA)</b>, <b>fault-tolerant (FT)</b>, and <b>disaster-resilient (DR)</b> solution using <b>AWS services</b>. The architecture is built to ensure <b>uninterrupted service</b> by distributing workloads across multiple <b>Availability Zones (AZs)</b> and incorporating <b>automated failover mechanisms</b>. It also features <b>robust disaster recovery strategies</b> to protect data and maintain <b>business continuity</b> during failures or disasters.</p>
+<p>The application processes and downscales videos uploaded to an S3 bucket, ensuring efficient storage and seamless delivery for end users. This project showcases my expertise in designing a <b>highly available (HA)</b>, <b>fault-tolerant (FT)</b>, and <b>disaster-resilient (DR)</b> solution using <b>AWS services</b>.
 
 <h2>🚀 Key Features</h2>
 <ul>
@@ -16,6 +16,14 @@
 </ul>
 
 <h2>🛠️ Technologies Used</h2>
+<ul>
+  <li><b>Cloud:</b> AWS (EC2, S3, Lambda, ALB, CloudWatch, IAM, Auto Scaling, VPC, Subnet, EC2 Launch Template, Auto Scaling Group, SNS, SQS)</li>
+  <li><b>IaC:</b> Terraform</li>
+  <li><b>CI/CD:</b> GitHub Actions</li>
+  <li><b>Programming Language:</b> Python, TypeScript</li>
+  <li><b>Containerization:</b> Docker</li>
+</ul>
+
 
 <h2>🗺️ Architecture Diagram</h2>
 
