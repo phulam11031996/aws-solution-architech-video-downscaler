@@ -68,41 +68,33 @@
 </ol>
 
 <h2 style="text-align: center; font-weight: bold;">▶️ How to Run the Project</h2>
+<h3>Prerequisites</h2>
+<ul>
+  <li><strong>Terraform</strong>: Ensure Terraform is installed on your system. You can download it from the <a href="https://www.terraform.io/downloads" target="_blank">Terraform official website</a>.</li>
+  <li><strong>Private Key File</strong>: You will need a private key file (<code>key.pem</code>) to access EC2 instances.</li>
+</ul>
 
-## Prerequisites
+<h3>Steps to Run the Project</h2>
 
-- **Terraform**: Ensure Terraform is installed on your system. You can download it from the [Terraform official website](https://www.terraform.io/downloads).
-- **Private Key File**: You will need a private key file (`key.pem`) to access EC2 instances.
+<h4>1. Clone the Repository</h3>
+<pre><code>git clone https://github.com/phulam11031996/aws-solution-architech-video-downscaler.git
+cd aws-solution-architech-video-downscaler</code></pre>
 
-## Steps to Run the Project
+<h4>2. Generate and Place the Key File</h3>
+<p>Use AWS Management Console or AWS CLI to generate <code>test-key-pair.pem</code> and copy your private key file into the <code>terraform/</code> directory and ensure it is named <code>test-key-pair.pem</code>.</p>
+<pre><code>cp /path/to/your-key.pem terraform/test-key-pair.pem</code></pre>
 
-### 1. Clone the Repository
+<h4>3. Initialize Terraform</h3>
+<p>Navigate to the repo <code>root</code> directory and run:</p>
+<pre><code>make tf-init
+make tf-apply</code></pre>
 
-```bash
-git clone https://github.com/phulam11031996/aws-solution-architech-video-downscaler.git
-cd aws-solution-architech-video-downscaler
-```
-### 2. Generate and Place the Key File
-
-Use AWS Management Console or AWS CLI to generate `test-key-pair.pem` and copy your private key file into the `terraform/` directory and ensure it is named `test-key-pair.pem`.
-
-```bash
-cp /path/to/your-key.pem terraform/test-key-pair.pem
-```
-### 3. Initialize Terraform
-
-Navigate to the repo `root` directory and run:
-
-```bash
-make tf-init
-make tf-apply
-```
-### 4. Access the Application
-
-Once the deployment is complete:
-
-1. Retrieve the public DNS of the Application Load Balancer (ALB) from the Terraform output.
-2. Open the web application in your browser using the ALB DNS.
+<h4>4. Access the Application</h3>
+<p>Once the deployment is complete:</p>
+<ol>
+  <li>Retrieve the public DNS of the Application Load Balancer (ALB) from the Terraform output.</li>
+  <li>Open the web application in your browser using the ALB DNS.</li>
+</ol>
 
 <h2 style="text-align: center; font-weight: bold;">🔮 Future Improvements</h2>
 <h3>Speed Improvements</h3>
