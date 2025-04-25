@@ -55,6 +55,16 @@
 <div align="center">
   <img src="https://github.com/user-attachments/assets/dc1badc5-220e-492c-84f9-7b3fa2119065" width="90%" />
 </div>
+<ol>
+  <li><strong>Web App Request:</strong> The Web App requests to upload a video.</li>
+  <li><strong>Generate Pre-signed URLs:</strong> The Web Server returns pre-signed PUT and GET URLs for the original and downscaled videos.</li>
+  <li><strong>Upload Original Video:</strong> The Web App uploads the original video to S3 using the pre-signed PUT URL and starts polling for downscaled outputs.</li>
+  <li><strong>Publish to SNS:</strong> The Web Server publishes a message to an SNS topic with video info and URLs.</li>
+  <li><strong>Distribute via SQS:</strong> The SNS topic fan-outs the message to three SQS queues (for downscale x1, x2, x3).</li>
+  <li><strong>Web Worker Processing:</strong> Each Web Worker polls its SQS queue, downloads the original video from S3, processes it, and uploads the downscaled result using its pre-signed URL.<br>
+    – Each worker runs in an Auto Scaling Group that scales independently based on queue size.</li>
+  <li><strong>Polling for Results:</strong> The Web App continues polling S3 until all downscaled videos are available.</li>
+</ol>
 
 
 <h2>🐞 Challenges and Solutions</h2>
