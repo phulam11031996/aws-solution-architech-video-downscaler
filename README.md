@@ -1,11 +1,11 @@
-<h1 align="center">
+<h1 style="text-align: center; font-weight: bold;">
   <b>AWS Solution Architect Video Downscaler</b>
 </h1>
 
-<h2>📌 Overview</h2>
+<h2 style="text-align: center; font-weight: bold;">📌 Overview</h2>
 <p>The application processes and downscales videos uploaded to an S3 bucket, ensuring efficient storage and seamless delivery for end users. This project showcases my expertise in designing a <b>highly available (HA)</b>, <b>fault-tolerant (FT)</b>, and <b>disaster-resilient (DR)</b> solution using <b>AWS services</b>.
 
-<h2>🚀 Key Features</h2>
+<h2 style="text-align: center; font-weight: bold;">🚀 Key Features</h2>
 <ul>
   <li><b>CI/CD Pipeline:</b> Implemented GitHub Actions for automated testing and deployment.</li>
   <li><b>Infrastructure as Code (IaC):</b> Used Terraform to provision and manage AWS resources.</li>
@@ -15,7 +15,7 @@
   <li><b>Containerization:</b> Dockerized the video processing application for portability and consistency.</li>
 </ul>
 
-<h2>🛠️ Technologies Used</h2>
+<h2 style="text-align: center; font-weight: bold;">🛠️ Technologies Used</h2>
 <h3>Infrastructure as Code</h3>
 <ul>
   <li><b>🛠️ Terraform</b> – For provisioning and managing AWS resources</li>
@@ -46,12 +46,12 @@
   <li>🖥️ <b>Bash</b> – For server setup and automation tasks</li>
 </ul>
 
-<h2>🗺️ Architecture Diagram</h2>
+<h style="text-align: center; font-weight: bold;">🗺️ Architecture Diagram</h2>
 <div align="center">
   <img src="https://github.com/user-attachments/assets/54d0d2c1-47bb-42b4-b957-0b73b009e953" width="90%" />
 </div>
 
-<h2>⚙️ How It Works</h2>
+<h2 style="text-align: center; font-weight: bold;">⚙️ How It Works</h2>
 <div align="center">
   <img src="https://github.com/user-attachments/assets/dc1badc5-220e-492c-84f9-7b3fa2119065" width="90%" />
 </div>
@@ -67,7 +67,7 @@
   <li><strong>S3 Lifecycle Management:</strong> A lifecycle policy automatically moves older videos into S3 Deep Archive storage to reduce storage costs.</li>
 </ol>
 
-<h2>▶️ How to Run the Project</h2>
+<h2 style="text-align: center; font-weight: bold;">▶️ How to Run the Project</h2>
 
 ## Prerequisites
 
@@ -106,7 +106,7 @@ Once the deployment is complete:
 1. Retrieve the public DNS of the Application Load Balancer (ALB) from the Terraform output.
 2. Open the web application in your browser using the ALB DNS.
 
-<h2>🔮 Future Improvements</h2>
+<h2 style="text-align: center; font-weight: bold;">🔮 Future Improvements</h2>
 <h3>Speed Improvements</h3>
 <ul>
   <li><strong>Multipart Upload:</strong> Implement multipart upload to S3 for faster and more efficient video uploads and downloads.</li>
