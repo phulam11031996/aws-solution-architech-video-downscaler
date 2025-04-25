@@ -16,28 +16,36 @@
 </ul>
 
 <h2>🛠️ Technologies Used</h2>
-### 🖥️ Frontend
-- ⚛️ **React** – UI library for building interactive user interfaces
-- 🎨 **Shadcn UI** – Component library built on Radix UI
-- 💨 **Tailwind CSS** – Utility-first CSS framework
+<h3>🖥️ Frontend</h3>
+<ul>
+  <li>⚛️ <b>React</b> – UI library for building interactive user interfaces</li>
+  <li>🎨 <b>Shadcn UI</b> – Component library built on Radix UI</li>
+  <li>💨 <b>Tailwind CSS</b> – Utility-first CSS framework</li>
+</ul>
+<h3>🛠️ Backend</h3>
+<ul>
+  <li>🟩 <b>Node.js</b> – JavaScript runtime for server-side applications</li>
+  <li>🚂 <b>Express</b> – Minimalist web framework for Node.js</li>
+  <li>🐍 <b>Python</b> – Used for the video processing application</li>
+</ul>
+<h3>⚙️ Infrastructure as Code</h3>
+<ul>
+  <li>🛠️ <b>Terraform</b> – For provisioning and managing AWS resources</li>
+</ul>
+<h3>💻 Programming & Scripting</h3>
+<ul>
+  <li>🐍 <b>Python</b> – Main language for video downscaling logic</li>
+  <li>🖥️ <b>Bash</b> – For server setup and automation tasks</li>
+</ul>
+<h3>📦 Containerization</h3>
+<ul>
+  <li>🐳 <b>Docker</b> – For packaging the video processing app into portable containers</li>
+</ul>
+<h3>🔄 CI/CD</h3>
+<ul>
+  <li>⚙️ <b>GitHub Actions</b> – For automating testing and deployment pipelines</li>
+</ul>
 
-### 🛠️ Backend
-- 🟩 **Node.js** – JavaScript runtime for server-side applications
-- 🚂 **Express** – Minimalist web framework for Node.js
-- 🐍 **Python** – Used for the video processing application
-
-### ⚙️ Infrastructure as Code
-- 🛠️ **Terraform** – For provisioning and managing AWS resources
-
-### 💻 Programming & Scripting
-- 🐍 **Python** – Main language for video downscaling logic
-- 🖥️ **Bash** – For server setup and automation tasks
-
-### 📦 Containerization
-- 🐳 **Docker** – For packaging the video processing app into portable containers
-
-### 🔄 CI/CD
-- ⚙️ **GitHub Actions** – For automating testing and deployment pipelines
 
 
 <h2>🗺️ Architecture Diagram</h2>
