@@ -1,4 +1,4 @@
-<h1 style="text-align: center; font-weight: bold; margin: 0 auto">
+<h1 style="text-align: center; font-weight: bold; margin: 0 auto;">
   AWS Solution Architect Video Downscaler
 </h1>
 
