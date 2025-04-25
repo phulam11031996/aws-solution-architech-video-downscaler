@@ -17,7 +17,7 @@
 
 <h2>🛠️ Technologies Used</h2>
 <ul>
-  <li><b>Cloud:</b> AWS (EC2, S3, Lambda, ALB, CloudWatch, IAM, Auto Scaling, VPC, Subnet, EC2 Launch Template, Auto Scaling Group, SNS, SQS)</li>
+  <li><b>Cloud:</b> AWS (VPC, Subnet, EC2 Launch Template, Auto Scaling Group, ALB, IAM Role, SNS, SQS, S3)</li>
   <li><b>IaC:</b> Terraform</li>
   <li><b>CI/CD:</b> GitHub Actions</li>
   <li><b>Programming Language:</b> Python, TypeScript</li>
