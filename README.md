@@ -46,12 +46,9 @@
   <li>🖥️ <b>Bash</b> – For server setup and automation tasks</li>
 </ul>
 
-
-
-
 <h2>🗺️ Architecture Diagram</h2>
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/2ba1e2d0-aab7-46b2-b7e0-160c04e26919" width="90%" />
+  <img src="https://github.com/user-attachments/assets/54d0d2c1-47bb-42b4-b957-0b73b009e953" width="90%" />
 </div>
 
 <h2>⚙️ How It Works</h2>
