@@ -390,24 +390,17 @@ function App() {
           <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
-              onClick={() => uploadSampleVideo(sample1, 'sample-video-1.mp4')}
+              onClick={() => uploadSampleVideo(sample2, 'sample-video-2.mp4')}
               disabled={isSampleUploading}
             >
               Sample 1
             </Button>
             <Button
               variant="outline"
-              onClick={() => uploadSampleVideo(sample2, 'sample-video-2.mp4')}
-              disabled={isSampleUploading}
-            >
-              Sample 2
-            </Button>
-            <Button
-              variant="outline"
               onClick={() => uploadSampleVideo(sample3, 'sample-video-3.mp4')}
               disabled={isSampleUploading}
             >
-              Sample 3
+              Sample 2
             </Button>
           </div>
         </CardFooter>
