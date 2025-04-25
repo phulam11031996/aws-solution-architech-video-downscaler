@@ -68,6 +68,7 @@
 </ol>
 
 <h2>▶️ How to Run the Project</h2>
+
 ## Prerequisites
 
 - **Terraform**: Ensure Terraform is installed on your system. You can download it from the [Terraform official website](https://www.terraform.io/downloads).
