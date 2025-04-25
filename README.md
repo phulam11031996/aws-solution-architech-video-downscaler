@@ -64,11 +64,23 @@
   <li><strong>Web Worker Processing:</strong> Each Web Worker polls its SQS queue, downloads the original video from S3, processes it, and uploads the downscaled result using its pre-signed URL.<br>
     – Each worker runs in an Auto Scaling Group that scales independently based on queue size.</li>
   <li><strong>Polling for Results:</strong> The Web App continues polling S3 until all downscaled videos are available.</li>
+  <li><strong>S3 Lifecycle Management:</strong> A lifecycle policy automatically moves older videos into S3 Deep Archive storage to reduce storage costs.</li>
 </ol>
-
 
 <h2>🐞 Challenges and Solutions</h2>
 
 <h2>▶️ How to Run the Project</h2>
 
 <h2>🔮 Future Improvements</h2>
+<h3>Speed Improvements</h3>
+<ul>
+  <li><strong>Multipart Upload:</strong> Implement multipart upload to S3 for faster and more efficient video uploads and downloads.</li>
+  <li><strong>GPU-Optimized EC2 Instances:</strong> Use GPU-based EC2 instances to accelerate video processing tasks.</li>
+  <li><strong>FFmpeg Optimization:</strong> Fine-tune FFmpeg settings to improve downscaling speed while maintaining quality.</li>
+</ul>
+
+<h3>Reason for Not Implementing</h3>
+<p>
+  These enhancements were skipped to keep the project focused on demonstrating scalable and cost-effective cloud architecture; Doing these speed improvements will incurring additional costs.
+</p>
+
