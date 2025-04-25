@@ -16,6 +16,18 @@
 </ul>
 
 <h2>🛠️ Technologies Used</h2>
+<h3>Infrastructure as Code</h3>
+<ul>
+  <li><b>🛠️ Terraform</b> – For provisioning and managing AWS resources</li>
+</ul>
+<h3>Containerization</h3>
+<ul>
+  <li>🐳 <b>Docker</b> – For packaging the video processing app into portable containers</li>
+</ul>
+<h3>CI/CD</h3>
+<ul>
+  <li>⚙️ <b>GitHub Actions</b> – For automating testing and deployment pipelines</li>
+</ul>
 <h3>Frontend</h3>
 <ul>
   <li>⚛️ <b>React</b> – UI library for building interactive user interfaces</li>
@@ -28,23 +40,12 @@
   <li>🚂 <b>Express</b> – Minimalist web framework for Node.js</li>
   <li>🐍 <b>Python</b> – Used for the video processing application</li>
 </ul>
-<h3>Infrastructure as Code</h3>
-<ul>
-  <li><b>🛠️ Terraform</b> – For provisioning and managing AWS resources</li>
-</ul>
 <h3>Programming & Scripting</h3>
 <ul>
   <li>🐍 <b>Python</b> – Main language for video downscaling logic</li>
   <li>🖥️ <b>Bash</b> – For server setup and automation tasks</li>
 </ul>
-<h3>Containerization</h3>
-<ul>
-  <li>🐳 <b>Docker</b> – For packaging the video processing app into portable containers</li>
-</ul>
-<h3>CI/CD</h3>
-<ul>
-  <li>⚙️ <b>GitHub Actions</b> – For automating testing and deployment pipelines</li>
-</ul>
+
 
 
 
