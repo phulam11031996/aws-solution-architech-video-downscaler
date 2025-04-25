@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import sample1 from '@/assets/sample-videos/sample-video-1.mp4';
 import sample2 from '@/assets/sample-videos/sample-video-2.mp4';
 import sample3 from '@/assets/sample-videos/sample-video-3.mp4';
 
