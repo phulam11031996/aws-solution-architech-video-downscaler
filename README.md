@@ -69,7 +69,7 @@
 <h3>Prerequisites</h3>
 <ul>
   <li><strong>Terraform</strong>: Ensure Terraform is installed on your system. You can download it from the <a href="https://www.terraform.io/downloads" target="_blank">Terraform official website</a>.</li>
-  <li><strong>Private Key File</strong>: You will need a private key file (<code>key.pem</code>) to access EC2 instances.</li>
+  <li><strong>Private Key File</strong>: You will need a private key file (<code>test-key-pair.pem</code>) to access EC2 instances.</li>
 </ul>
 
 <h3>Steps to Run the Project</h3>
