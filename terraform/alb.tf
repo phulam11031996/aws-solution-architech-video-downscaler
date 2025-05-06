@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "web_app_alb_tg" {
 
 
 # ALB Listener for HTTP
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "web_app_http_80_listener" {
   load_balancer_arn = aws_lb.web_app_alb.arn
   port              = 80
   protocol          = "HTTP"
@@ -73,19 +73,6 @@ resource "aws_lb_target_group" "web_server_tg" {
 
 # Add HTTP Listener on port 80 for web_server_alb
 resource "aws_lb_listener" "web_server_http_80_listener" {
-  load_balancer_arn = aws_lb.web_server_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.web_server_tg.arn
-  }
-}
-
-
-# ALB Listener for Web Server
-resource "aws_lb_listener" "web_server_listener" {
   load_balancer_arn = aws_lb.web_server_alb.arn
   port              = 80
   protocol          = "HTTP"
