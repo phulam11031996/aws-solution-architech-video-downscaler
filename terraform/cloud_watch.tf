@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "video_x1_queue_low" {
   namespace           = "AWS/SQS"
   period              = 60
   statistic           = "Average"
-  threshold           = 1
+  threshold           = 2
   alarm_description   = "Scale in if queue is mostly empty"
   dimensions = {
     QueueName = aws_sqs_queue.video_x1_queue.name
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_metric_alarm" "video_x1_queue_low" {
 resource "aws_cloudwatch_metric_alarm" "x2_queue_high" {
   alarm_name          = "x2-queue-too-many-messages"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 2
+  evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
   period              = 60
@@ -54,7 +54,7 @@ resource "aws_cloudwatch_metric_alarm" "x2_queue_high" {
 resource "aws_cloudwatch_metric_alarm" "x2_queue_low" {
   alarm_name          = "x2-queue-few-messages"
   comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods  = 2
+  evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
   period              = 60
@@ -72,7 +72,7 @@ resource "aws_cloudwatch_metric_alarm" "x2_queue_low" {
 resource "aws_cloudwatch_metric_alarm" "x3_queue_high" {
   alarm_name          = "x3-queue-too-many-messages"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 2
+  evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
   period              = 60
@@ -90,7 +90,7 @@ resource "aws_cloudwatch_metric_alarm" "x3_queue_high" {
 resource "aws_cloudwatch_metric_alarm" "x3_queue_low" {
   alarm_name          = "x3-queue-few-messages"
   comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods  = 2
+  evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
   period              = 60
