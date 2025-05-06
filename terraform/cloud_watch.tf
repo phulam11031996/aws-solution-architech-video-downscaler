@@ -5,7 +5,7 @@ resource "aws_cloudwatch_metric_alarm" "video_x1_queue_high" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 5
   alarm_description   = "Trigger if video-x1-queue has more than 5 messages"
@@ -22,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "video_x1_queue_low" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 2
   alarm_description   = "Scale in if queue is mostly empty"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "x2_queue_high" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 5
 
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_metric_alarm" "x2_queue_low" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 2
 
@@ -75,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "x3_queue_high" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 5
 
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "x3_queue_low" {
   evaluation_periods  = 1
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
-  period              = 60
+  period              = 30
   statistic           = "Average"
   threshold           = 2
 

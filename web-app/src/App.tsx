@@ -198,7 +198,7 @@ function App() {
       const data = await getPresignedUrls(file.type); // Get the presigned URLs from the service
 
       // Upload the original file to S3
-      await uploadToS3(data.downScaleX0.putPresignedUrl, file);
+      uploadToS3(data.downScaleX0.putPresignedUrl, file);
 
       const newEntry: RowDataItem = {
         id: rowData.length + 1,
