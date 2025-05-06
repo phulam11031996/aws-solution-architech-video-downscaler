@@ -46,9 +46,8 @@
 
 <h2 style="text-align: center; font-weight: bold; font-size: 40px;">🗺️ Architecture Diagram</h2>
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/54d0d2c1-47bb-42b4-b957-0b73b009e953" width="90%" />
+  <img src="https://github.com/user-attachments/assets/95148e3b-77f6-40c9-9e0e-1ea6f80c5827" width="90%" />
 </div>
-
 <h2 style="text-align: center; font-weight: bold; font-size: 40px;">⚙️ How It Works</h2>
 <div align="center">
   <img src="https://github.com/user-attachments/assets/dc1badc5-220e-492c-84f9-7b3fa2119065" width="90%" />
